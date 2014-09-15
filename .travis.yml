@@ -10,3 +10,16 @@ env:
   global:
   - secure: u5Yk4lPW/WlIumEdLfQzEDHIpH7ZtKyE8qDO6MZapA39LoRhiV/wqV899shtNEhD759Xeb8e5IbDAo+6X4Gc7mp2Kx+jkz3xqYK3aczW/wkP5SSB0u3Jrw89H9k8HDlySONTn72dMM3BkcqCRMJGChmk1ZyaCEzxQqD5gDFTwDM=
   - secure: Jl4UaE/throJ7XlsSiN5xcQkRGu9h9BYp+D766FRFNKYXLQ1LwlgZ3aXWDE41rjbGaPSyyPuZ42piFbckHo8ZWDmIFbg5VBVWGSz/kNvy16kBW9TPkrItybgb1LV1WhyQ9KQmAWl+2JD9yRu5+JQ+yHDhZxMn/72s3FENYjz/aA=
+  - secure: CAlYzF4PxTlJ0KnSO4pJXYr/DMwtvrmn6fgvz2+uiODHig8ADhZUdbBsYUNhXhhP/WOrrSqvoyUe2Lm63Iju31sH43MxtdCy0INmN0nI6UoOHdzHOhp07ToWUdcmJusiMGYoMGihDrvwbhu838uKM4PHAVOaiOvkqjJsu0bPpBY=
+before_deploy:
+- grunt before-deploy
+after_deploy:
+- grunt after-deploy
+deploy:
+  provider: npm
+  email: jhaynie@appcelerator.com
+  on:
+    all_branches: true
+    tags: true
+  api_key:
+    secure: n3Of6t9K5s7kOXQEJcMT1gvPdopMM3D/hl/QXNYqEmNJCK1HG9JzG2i3clNzK5OQ/lvk8ih92eiF6aAVzdlShD5VJ5CF9Y1nrbzTQaBf9VAbsPMB0yH/X8oQuRr+vFMnzwD1F1eMmm9wPzAQEEnbi9jF6stE3EG8OSzpFO/5rCw=

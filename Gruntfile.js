@@ -30,6 +30,10 @@ module.exports = function(grunt) {
 		clean: {
 			pre: ['*.log'],
 			post: ['tmp']
+		},
+		release: {
+			email: 'jhaynie@appcelerator.com',
+			name: 'Jeff Haynie'
 		}
 	});
 
@@ -37,6 +41,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-mocha-test');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-semantic-release');
 
 	// set required env vars
 	grunt.registerTask('env', function() {
