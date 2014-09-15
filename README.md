@@ -117,3 +117,4 @@ This project is open source and provided under the [Apache Public License
 (version 2)](https://tldrlegal.com/license/apache-license-2.0-(apache-2.0)).
 
 Copyright (c) 2014, [Appcelerator](http://www.appcelerator.com/) Inc. All Rights Reserved.
+
