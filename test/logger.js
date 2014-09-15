@@ -31,6 +31,31 @@ describe("logger", function(){
 		should(index.createDefaultLogger).be.a.function;
 	});
 
+	it("should merge stream options", function(done){
+		var logfile = path.join(tmpdir, 'test.log');
+
+		var logger = index.createLogger({
+			streams: [
+				{
+					level: 'trace',
+					path: logfile,
+					type: 'file'
+				}
+			]
+		});
+
+		logger.trace('trace');
+
+		// need to give logging time to flush output
+		setTimeout(function() {
+			should(fs.existsSync(logfile)).be.ok;
+			var contents = fs.readFileSync(logfile).toString();
+			should(/\"msg\"\:\"trace\"/.test(contents)).be.ok;
+			fs.unlinkSync(logfile);
+			done();
+		}, 100);
+	});
+
 	it("should be able to log restify requests", function(callback){
 
 		var server = restify.createServer();
