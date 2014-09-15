@@ -16,7 +16,31 @@ var logger = Logger.createLogger();
 logger.info('Hello, world');
 ```
 
+You should see:
+
+```bash
+INFO   | Hello, world
+```
+
 The returned logger instance is a Bunyan logger instance.  The only stream added for the basic logger is a console logger.  The built-in console logger will do basic color coding to the console based on the level. However, by default, color coding will be removed when the TTY is not attached (for example, piping the output of the process to a file) or when running in the [Travis](travis-ci.org) build environment.
+
+You can customize the default logger with sending options into the constructor.
+
+The following are available properties for customization:
+
+- `prefix` - boolean to indicate if the Log Level should be printed in the console.  defaults to true. set to false to suppress the label.
+
+```javascript
+var Logger = require('appc-logger');
+var logger = Logger.createLogger({prefix:false});
+logger.info('Hello, world');
+```
+
+You should see:
+
+```bash
+Hello, world
+```
 
 
 ## Restify Logger
@@ -117,4 +141,3 @@ This project is open source and provided under the [Apache Public License
 (version 2)](https://tldrlegal.com/license/apache-license-2.0-(apache-2.0)).
 
 Copyright (c) 2014, [Appcelerator](http://www.appcelerator.com/) Inc. All Rights Reserved.
-
