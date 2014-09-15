@@ -1,10 +1,5 @@
 var exec = require('child_process').exec,
-	fs = require('fs'),
-	path = require('path'),
-	_ = require('lodash');
-
-var BIN = './node_modules/.bin/',
-	HOME = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+	BIN = './node_modules/.bin/';
 
 module.exports = function(grunt) {
 
@@ -30,10 +25,6 @@ module.exports = function(grunt) {
 		clean: {
 			pre: ['*.log'],
 			post: ['tmp']
-		},
-		release: {
-			email: 'jhaynie@appcelerator.com',
-			name: 'Jeff Haynie'
 		}
 	});
 
@@ -41,27 +32,10 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-mocha-test');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-clean');
-	grunt.loadNpmTasks('grunt-semantic-release');
 
 	// set required env vars
 	grunt.registerTask('env', function() {
 		process.env.TEST = '1';
-
-		// create list of search paths
-		var configs = [path.resolve('.apibuilder')];
-		if (HOME) { configs.push(path.join(HOME, '.apibuilder')); }
-
-		for (var i = 0; i < configs.length; i++) {
-			var config = configs[i];
-			if (fs.existsSync(config)) {
-				_.merge(process.env, JSON.parse(fs.readFileSync(config, 'utf8')));
-				break;
-			}
-		}
-
-		if (process.env.TRAVIS && !process.env.npm_config__auth) {
-			process.env.npm_config__auth = process.env.NPM_AUTH_KEY;
-		}
 	});
 
 	// run test coverage
