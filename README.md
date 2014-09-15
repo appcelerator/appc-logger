@@ -1,4 +1,4 @@
-# Appcelerator Common Logger
+# Appcelerator Common Logger [![Build Status](https://magnum.travis-ci.com/appcelerator/appc-logger.svg?token=xjwxUDk3aUJaLhguTqyB)](https://magnum.travis-ci.com/appcelerator/appc-logger)
 
 ## Introduction
 
