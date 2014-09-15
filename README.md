@@ -12,7 +12,7 @@ You can create a default logger that logs to the console using:
 
 ```javascript
 var Logger = require('appc-logger');
-var logger = Logger.createDefaultLogger();
+var logger = Logger.createLogger();
 logger.info('Hello, world');
 ```
 

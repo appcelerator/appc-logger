@@ -142,4 +142,22 @@ describe("console", function(){
 		}
 	});
 
+	it("should be able to use format symbols", function(callback){
+		should(ConsoleLogger).be.an.object;
+		try {
+			_console.start();
+			_console.on('data',function(buf){
+				_console.stop();
+				should(buf).equal('INFO   | hello world 1');
+				callback();
+			});
+			var logger = index.createDefaultLogger();
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			logger.info('hello %s %d','world',1);
+		}
+		finally {
+			_console.stop();
+		}
+	});
 });
