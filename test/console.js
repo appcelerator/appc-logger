@@ -204,4 +204,76 @@ describe("console", function(){
 		}
 	});
 
+	it("should remove carriage return marker", function(callback){
+		try {
+			_console.start();
+			_console.on('data',function(buf){
+				_console.stop();
+				should(buf).equal('hello\nworld');
+				callback();
+			});
+			var logger = index.createLogger({prefix:false,showcr:false});
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			logger.info('hello\nworld');
+		}
+		finally {
+			_console.stop();
+		}
+	});
+
+	it("should show carriage return marker", function(callback){
+		try {
+			_console.start();
+			_console.on('data',function(buf){
+				_console.stop();
+				should(buf).equal('hello↩\nworld↩');
+				callback();
+			});
+			var logger = index.createLogger({prefix:false, showcr:true});
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			logger.info('hello\nworld');
+		}
+		finally {
+			_console.stop();
+		}
+	});
+
+	it("should show tab marker", function(callback){
+		try {
+			_console.start();
+			_console.on('data',function(buf){
+				_console.stop();
+				should(buf).equal('hello\t↠world');
+				callback();
+			});
+			var logger = index.createLogger({prefix:false});
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			logger.info('hello\tworld');
+		}
+		finally {
+			_console.stop();
+		}
+	});
+
+	it("should remove tab marker", function(callback){
+		try {
+			_console.start();
+			_console.on('data',function(buf){
+				_console.stop();
+				should(buf).equal('hello\tworld');
+				callback();
+			});
+			var logger = index.createLogger({prefix:false, showtab:false});
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			logger.info('hello\tworld');
+		}
+		finally {
+			_console.stop();
+		}
+	});
+
 });
