@@ -1,0 +1,97 @@
+#!/usr/bin/env node
+
+var chalk = require('chalk'),
+	program = require('commander'),
+	Processor = require('../lib/processor'),
+	Logger = require('../lib/logger'),
+	logger = Logger.createDefaultLogger();
+
+
+program.description('publish a set of logs to the log server')
+	.usage('[options]')
+	.option('-d, --dir <directory>', 'directory to read logs from')
+	.option('-f, --file <file>', 'single file to publish')
+	.option('-k, --keep', 'keep files around or delete them (default)')
+	.option('-q, --quiet', 'supress output')
+	.option('-l, --level <level>','set the log level. defaults to info')
+	.option('-w, --watch',"watch files and don't exit")
+	.option('-a, --age <age>','age of the file in milliseconds before sending (defaults to 60000)')
+	.option('-i, --interval',"interval in milliseconds to check and send files")
+	.option('-g, --grep <pattern>',"filter pattern which should be regular expression")
+	.option('-s, --server <server>', 'server to publish logs (other than default)');
+
+program.parse(process.argv);
+
+if (program.level) {
+	logger.level(program.level);
+}
+else {
+	logger.level('info');
+}
+if (program.quiet) {
+	logger._level = Number.POSITIVE_INFINITY;
+}
+if (!program.age) {
+	 // 1 min old by default if not specified
+	program.age = 60000;
+}
+
+logger.info({password:1},'hello');
+
+var processor = new Processor(program,logger),
+	stopped = false;
+
+
+processor.on('error',function(err,fatal){
+	logger.fatal(err);
+	if (!program.watch || fatal) {
+		process.exit(1);
+	}
+});
+
+processor.on('start',function(total){
+	logger.info('Starting');
+});
+
+processor.on('end',function(err){
+	if (!program.watch) {
+		if (err) {
+			logger.fatal(err);
+			process.exit(1);
+		}
+		logger.info('Done!');
+		process.exit(0);
+	}
+	else {
+		if (err) {
+			logger.error(err);
+		}
+	}
+});
+
+if (program.watch) {
+	var interval = Math.max(5000,program.interval);
+	var timer = setInterval(processor.start.bind(processor), interval);
+
+	process.on('SIGINT', function(){
+		stopped = true;
+		if (timer) {
+			clearInterval(timer);
+			timer = null;
+		}
+	});
+
+	process.on('exit',function(code,signal){
+		if (stopped) {
+			return process.exit(code);
+		}
+		stopped = true;
+		if (timer) {
+			clearInterval(timer);
+		}
+	});
+
+}
+else {
+	processor.start();
+}
