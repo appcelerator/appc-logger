@@ -30,6 +30,11 @@ The following are available properties for customization:
 
 - `prefix` - boolean to indicate if the Log Level should be printed in the console.  defaults to true. set to false to suppress the label.
 
+- `showcr` - boolean to indicate if the log output show show a special carriage return symbol (`↩`) to indicate a carriage return in the message.  defaults to true.
+
+- `showtab` - boolean to indicate if the log output show show a special tab symbol (`↠`) to indicate a tab in the message.  defaults to true.
+
+
 ```javascript
 var Logger = require('appc-logger');
 var logger = Logger.createLogger({prefix:false});
