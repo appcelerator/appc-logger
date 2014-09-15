@@ -183,4 +183,25 @@ describe("console", function(){
 			console_.stop();
 		}
 	});
+
+
+	it("should remove log level", function(callback){
+		var console_ = new ConsoleClass(false);
+		try {
+			console_.start();
+			console_.on('data',function(buf){
+				console_.stop();
+				should(buf).equal('hello world');
+				callback();
+			});
+			var logger = index.createLogger({prefix:false});
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			logger.info('hello world');
+		}
+		finally {
+			console_.stop();
+		}
+	});
+
 });
