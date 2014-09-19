@@ -296,4 +296,24 @@ describe("console", function(){
 		}
 	});
 
+	it("should mask log record if only argument", function(callback){
+		try {
+			this.timeout(1000);
+			_console.start(1000);
+			_console.on('data',function(buf){
+				_console.stop();
+				should(buf).not.equal(util.format({'password':'1234'}));
+				should(buf).equal(util.format({'password':'[HIDDEN]'}));
+				callback();
+			});
+			var logger = index.createLogger({prefix:false, showtab:false});
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			logger.info({'password':'1234'});
+		}
+		finally {
+			_console.stop();
+		}
+	});
+
 });
