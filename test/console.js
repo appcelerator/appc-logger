@@ -1,4 +1,5 @@
 var should = require('should'),
+	util = require('util'),
 	ConsoleClass = require('./_console'),
 	_console = new ConsoleClass(),
 	index = require('../'),
@@ -270,6 +271,25 @@ describe("console", function(){
 			should(logger).be.an.object;
 			should(logger.info).be.a.function;
 			logger.info('hello\tworld');
+		}
+		finally {
+			_console.stop();
+		}
+	});
+
+	it("should log the record if there is no message", function(callback){
+		try {
+			this.timeout(1000);
+			_console.start(1000);
+			_console.on('data',function(buf){
+				_console.stop();
+				should(buf).equal(util.format({'hello':'world'}));
+				callback();
+			});
+			var logger = index.createLogger({prefix:false, showtab:false});
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			logger.info({'hello':'world'});
 		}
 		finally {
 			_console.stop();
