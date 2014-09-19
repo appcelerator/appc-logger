@@ -1,3 +1,8 @@
+## 1.0.5 (2014-09-19)
+
+- Support sending first argument as an object and having it correctly format for Console Logger ([#7](https://github.com/appcelerator/appc-logger/issues/7))
+- Fixed context for console.log in Console Logger
+
 ## 1.0.4 (2014-09-15)
 
 - Make sure that the directory exists for Restify logger before attempting to setup the stream
