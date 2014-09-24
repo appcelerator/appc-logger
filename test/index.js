@@ -1,4 +1,5 @@
-var should = require('should'),
+var bunyan = require('bunyan'),
+    should = require('should'),
 	index = require('../');
 
 describe("index", function(){
@@ -34,6 +35,15 @@ describe("index", function(){
             return true;
         };
         logger.info({obj:{password:'1234'}},'hello');
+    });
+
+    it('should expose bunyan constants', function() {
+        index.TRACE.should.equal(bunyan.TRACE);
+        index.DEBUG.should.equal(bunyan.DEBUG);
+        index.INFO.should.equal(bunyan.INFO);
+        index.WARN.should.equal(bunyan.WARN);
+        index.ERROR.should.equal(bunyan.ERROR);
+        index.FATAL.should.equal(bunyan.FATAL);
     });
 
 });
