@@ -1,3 +1,7 @@
+## 1.0.6 (2014-10-09)
+
+- Restify logger: send log entry to requests.log only after request ends. added duration to log entry that represents the milliseconds that the request took (duration)
+
 ## 1.0.5 (2014-09-19)
 
 - Support sending first argument as an object and having it correctly format for Console Logger ([#7](https://github.com/appcelerator/appc-logger/issues/7))
