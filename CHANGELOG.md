@@ -1,4 +1,4 @@
-## 1.0.6 (2014-10-09)
+## 1.0.7 (2014-10-09)
 
 - Restify logger: send log entry to requests.log only after request ends. added duration to log entry that represents the milliseconds that the request took (duration)
 
