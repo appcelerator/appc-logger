@@ -1,3 +1,8 @@
+## 1.0.8 (2014-10-11)
+
+- Use high resolution timer for request logging (Restify)
+- Allow Restify after event to be customized
+
 ## 1.0.7 (2014-10-09)
 
 - Restify logger: send log entry to requests.log only after request ends. added duration to log entry that represents the milliseconds that the request took (duration)
