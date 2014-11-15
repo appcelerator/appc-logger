@@ -133,7 +133,7 @@ describe("logger", function(){
 					should(contents).have.property('name',files[0].replace(/\.log$/,''));
 					should(contents).have.property('req_id',reqid);
 					should(contents).have.property('req');
-					should(contents).not.have.property('res');
+					should(contents).have.property('res');
 					should(contents).have.property('msg','');
 					should(contents).have.property('level',30);
 					should(contents).have.property('logname',logfn);

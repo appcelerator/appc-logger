@@ -1,3 +1,11 @@
+## 1.0.10 (2014-11-15)
+
+- Allow passing through color codes for logging when --colorize is passed in or specifically specifying colorize option in constructor of Logger
+
+## 1.0.9 (2014-10-22)
+
+- Limit Bunyan to 1.1.x because of [issue with bundling](https://github.com/appcelerator/appc-logger/commit/af72f1f5f3a14ef96e188620defadcd58b7ce3a4)
+
 ## 1.0.8 (2014-10-11)
 
 - Use high resolution timer for request logging (Restify)

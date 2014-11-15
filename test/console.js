@@ -3,12 +3,22 @@ var should = require('should'),
 	ConsoleClass = require('./_console'),
 	_console = new ConsoleClass(),
 	index = require('../'),
-	ConsoleLogger = index.ConsoleLogger;
+	ConsoleLogger = index.ConsoleLogger,
+	defaultTravis = process.env.TRAVIS,
+	defaultArgs = process.argv;
 
 describe("console", function(){
 
+	before(function(){
+		_console.log('before');
+	});
+
 	after(function(){
 		_console.stop();
+		ConsoleLogger.resetColorize();
+		process.env.TRAVIS = defaultTravis;
+		process.argv = defaultArgs;
+		_console.log('after');
 	});
 
 	it("should be able to log at info", function(callback){
@@ -164,7 +174,6 @@ describe("console", function(){
 
 	it("should remove color coding", function(callback){
 		var console_ = new ConsoleClass(false);
-		var travis = process.env.TRAVIS;
 		try {
 			console_.start();
 			console_.on('data',function(buf){
@@ -172,15 +181,15 @@ describe("console", function(){
 				should(buf).equal('INFO   | hello world 1');
 				callback();
 			});
+			process.env.TRAVIS = 1; // force log coloring off
+			ConsoleLogger.resetColorize();
 			var logger = index.createDefaultLogger();
 			should(logger).be.an.object;
 			should(logger.info).be.a.function;
 			var chalk = require('chalk');
-			process.env.TRAVIS = 1; // force log coloring off
 			logger.info('hello %s %d',chalk.red('world'),1);
 		}
 		finally {
-			process.env.TRAVIS = travis; // reset travis setting
 			console_.stop();
 		}
 	});
@@ -313,6 +322,118 @@ describe("console", function(){
 		}
 		finally {
 			_console.stop();
+		}
+	});
+
+	it("should color code if colorize is specified", function(callback){
+		var console_ = new ConsoleClass(false);
+		try {
+			console_.start();
+			console_.on('data',function(buf){
+				console_.stop();
+				should(buf).equal('\u001b[32mINFO  \u001b[39m \u001b[1m\u001b[90m|\u001b[39m\u001b[22m hello \u001b[31mworld\u001b[39m 1');
+				callback();
+			});
+			var logger = index.createDefaultLogger({colorize:true});
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			var chalk = require('chalk');
+			logger.info('hello %s %d',chalk.red('world'),1);
+		}
+		finally {
+			console_.stop();
+		}
+	});
+
+	it("should not color code if colorize is specified as false", function(callback){
+		var console_ = new ConsoleClass(false);
+		try {
+			console_.start();
+			console_.on('data',function(buf){
+				console_.stop();
+				should(buf).equal('INFO   | hello world 1');
+				callback();
+			});
+			var logger = index.createDefaultLogger({colorize:false});
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			var chalk = require('chalk');
+			logger.info('hello %s %d',chalk.red('world'),1);
+		}
+		finally {
+			console_.stop();
+		}
+	});
+
+	it("should not color code if --no-colors is specified", function(callback){
+		var console_ = new ConsoleClass(false);
+		var args = process.argv;
+		try {
+			console_.start();
+			console_.on('data',function(buf){
+				console_.stop();
+				should(buf).equal('INFO   | hello world 1');
+				callback();
+			});
+			process.argv = ['node','--no-colors'];
+			ConsoleLogger.resetColorize();
+			var logger = index.createDefaultLogger();
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			var chalk = require('chalk');
+			logger.info('hello %s %d',chalk.red('world'),1);
+		}
+		finally {
+			console_.stop();
+			process.argv = args;
+		}
+	});
+
+	it("should not color code if --no-color is specified", function(callback){
+		var console_ = new ConsoleClass(false);
+		var args = process.argv;
+		try {
+			console_.start();
+			console_.on('data',function(buf){
+				console_.stop();
+				should(buf).equal('INFO   | hello world 1');
+				callback();
+			});
+			process.argv = ['node','--no-color'];
+			ConsoleLogger.resetColorize();
+			var logger = index.createDefaultLogger();
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			var chalk = require('chalk');
+			logger.info('hello %s %d',chalk.red('world'),1);
+		}
+		finally {
+			console_.stop();
+			process.argv = args;
+		}
+	});
+
+	it("should color code if --colorize is specified", function(callback){
+		var console_ = new ConsoleClass(false);
+		var args = process.argv;
+		try {
+			console_.start();
+			console_.on('data',function(buf){
+				console_.stop();
+				should(buf).equal('\u001b[32mINFO  \u001b[39m \u001b[1m\u001b[90m|\u001b[39m\u001b[22m hello \u001b[31mworld\u001b[39m 1');
+				callback();
+			});
+			process.argv = ['node','--colorize'];
+			ConsoleLogger.resetColorize();
+			var logger = index.createDefaultLogger();
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			var chalk = require('chalk');
+			logger.info('hello %s %d',chalk.red('world'),1);
+		}
+		finally {
+			console_.stop();
+			process.argv = args;
 		}
 	});
 
