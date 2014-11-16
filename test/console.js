@@ -3,6 +3,7 @@ var should = require('should'),
 	ConsoleClass = require('./_console'),
 	_console = new ConsoleClass(),
 	index = require('../'),
+	chalk = require('chalk'),
 	ConsoleLogger = index.ConsoleLogger,
 	defaultTravis = process.env.TRAVIS,
 	defaultArgs = process.argv;
@@ -10,7 +11,7 @@ var should = require('should'),
 describe("console", function(){
 
 	before(function(){
-		_console.log('before');
+		ConsoleLogger.resetColorize();
 	});
 
 	after(function(){
@@ -18,7 +19,6 @@ describe("console", function(){
 		ConsoleLogger.resetColorize();
 		process.env.TRAVIS = defaultTravis;
 		process.argv = defaultArgs;
-		_console.log('after');
 	});
 
 	it("should be able to log at info", function(callback){
@@ -337,7 +337,6 @@ describe("console", function(){
 			var logger = index.createDefaultLogger({colorize:true});
 			should(logger).be.an.object;
 			should(logger.info).be.a.function;
-			var chalk = require('chalk');
 			logger.info('hello %s %d',chalk.red('world'),1);
 		}
 		finally {
