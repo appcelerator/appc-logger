@@ -1,3 +1,7 @@
+## 1.0.19 (2015-01-11)
+
+- make sure we remember the user set level and return that from overriden level() in ProblemLogger
+
 ## 1.0.18 (2015-01-11)
 
 - make sure we return built in level if called with no args from overriden level() in ProblemLogger
