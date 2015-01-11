@@ -1,3 +1,7 @@
+## 1.0.16 (2015-01-10)
+
+- more improvements to ProblemLogger
+
 ## 1.0.15 (2015-01-10)
 
 - add a header to the problem log file when opened. print out date/time for problem log.
