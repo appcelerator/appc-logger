@@ -1,3 +1,7 @@
+## 1.0.17 (2015-01-11)
+
+- make sure we return the level from overriden level() in ProblemLogger
+
 ## 1.0.16 (2015-01-10)
 
 - more improvements to ProblemLogger
