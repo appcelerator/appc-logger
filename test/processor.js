@@ -113,7 +113,6 @@ function createServerTest(cmd, callback) {
 			});
 
 			console.log(cmd);
-
 			exec(cmd, function(err,stdout,stderr){
 				process.env.CONSOLE && console.log(arguments);
 				server.close();

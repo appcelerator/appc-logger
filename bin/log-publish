@@ -82,13 +82,13 @@ if (program.watch) {
 	});
 
 	process.on('exit',function(code,signal){
+		if (timer) {
+			clearInterval(timer);
+		}
 		if (stopped) {
 			return process.exit(code);
 		}
 		stopped = true;
-		if (timer) {
-			clearInterval(timer);
-		}
 	});
 
 }

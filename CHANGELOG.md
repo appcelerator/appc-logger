@@ -1,3 +1,8 @@
+## 1.0.15 (2015-01-10)
+
+- add a header to the problem log file when opened. print out date/time for problem log.
+- make sure problem logger exits if no problem logger configured
+
 ## 1.0.14 (2015-01-10)
 
 - make sure process.exit override defaults to 0 if not specified
