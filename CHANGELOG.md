@@ -1,3 +1,7 @@
+## 1.0.13 (2015-01-10)
+
+- Added ability for default logger which will dump a log file at TRACE level if process exits non-zero in current working directory
+
 ## 1.0.10 (2014-11-15)
 
 - Allow passing through color codes for logging when --colorize is passed in or specifically specifying colorize option in constructor of Logger
