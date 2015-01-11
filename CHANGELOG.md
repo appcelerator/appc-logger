@@ -1,3 +1,7 @@
+## 1.0.14 (2015-01-10)
+
+- make sure process.exit override defaults to 0 if not specified
+
 ## 1.0.13 (2015-01-10)
 
 - Added ability for default logger which will dump a log file at TRACE level if process exits non-zero in current working directory
