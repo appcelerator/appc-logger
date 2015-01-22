@@ -1,3 +1,8 @@
+## 1.0.20 (2015-01-21)
+
+- write out a metadata for logging in addition to requests.log
+- removed unused log processing code and CLI
+
 ## 1.0.19 (2015-01-11)
 
 - make sure we remember the user set level and return that from overriden level() in ProblemLogger

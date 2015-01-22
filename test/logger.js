@@ -107,9 +107,9 @@ describe("logger", function(){
 					var reqid = res.headers['request-id'];
 					var files = fs.readdirSync(tmpdir);
 					should(files).be.an.array;
-					should(files).have.length(2);
+					should(files).have.length(3);
 					var fn = path.join(tmpdir, files.filter(function(fn){
-						return fn!=='requests.log';
+						return fn!=='requests.log' && !/metadata$/.test(fn);
 					})[0]);
 					var logfn = fn;
 
@@ -125,6 +125,17 @@ describe("logger", function(){
 					should(contents).have.property('msg','start');
 					should(contents).have.property('level',30);
 
+					should(fs.existsSync(fn+'.metadata')).be.true;
+
+					var metadata = fs.readFileSync(fn+'.metadata').toString();
+					contents = JSON.parse(metadata);
+					should(contents).be.an.object;
+					should(contents).have.property('logname',logfn);
+					should(contents).have.property('req_id',reqid);
+					should(contents).have.property('req_headers');
+					should(contents).have.property('duration');
+					should(contents).have.property('name',path.basename(fn).replace('.log',''));
+
 					// now validate that our request is logged that points to our
 					// request log
 					fn = path.join(tmpdir, 'requests.log');
@@ -137,6 +148,7 @@ describe("logger", function(){
 					should(contents).have.property('msg','');
 					should(contents).have.property('level',30);
 					should(contents).have.property('logname',logfn);
+
 					callback();
 				});
 
