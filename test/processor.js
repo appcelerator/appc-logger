@@ -63,7 +63,7 @@ describe("logger", function(){
 			stdout.should.match(/Done!/);
 			should(body).be.ok;
 			should(files).be.ok;
-			should(body).have.property('count',1);
+			should(body).have.property('count','1');
 			should(body).have.property('platform',process.platform);
 			should(body).have.property('ipaddress');
 			should(body).have.property('user');
@@ -113,7 +113,6 @@ function createServerTest(cmd, callback) {
 			});
 
 			console.log(cmd);
-
 			exec(cmd, function(err,stdout,stderr){
 				process.env.CONSOLE && console.log(arguments);
 				server.close();

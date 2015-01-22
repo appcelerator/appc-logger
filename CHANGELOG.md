@@ -1,3 +1,40 @@
+## 1.0.19 (2015-01-11)
+
+- make sure we remember the user set level and return that from overriden level() in ProblemLogger
+
+## 1.0.18 (2015-01-11)
+
+- make sure we return built in level if called with no args from overriden level() in ProblemLogger
+
+## 1.0.17 (2015-01-11)
+
+- make sure we return the level from overriden level() in ProblemLogger
+
+## 1.0.16 (2015-01-10)
+
+- more improvements to ProblemLogger
+
+## 1.0.15 (2015-01-10)
+
+- add a header to the problem log file when opened. print out date/time for problem log.
+- make sure problem logger exits if no problem logger configured
+
+## 1.0.14 (2015-01-10)
+
+- make sure process.exit override defaults to 0 if not specified
+
+## 1.0.13 (2015-01-10)
+
+- Added ability for default logger which will dump a log file at TRACE level if process exits non-zero in current working directory
+
+## 1.0.10 (2014-11-15)
+
+- Allow passing through color codes for logging when --colorize is passed in or specifically specifying colorize option in constructor of Logger
+
+## 1.0.9 (2014-10-22)
+
+- Limit Bunyan to 1.1.x because of [issue with bundling](https://github.com/appcelerator/appc-logger/commit/af72f1f5f3a14ef96e188620defadcd58b7ce3a4)
+
 ## 1.0.8 (2014-10-11)
 
 - Use high resolution timer for request logging (Restify)
