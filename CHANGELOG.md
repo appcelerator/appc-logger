@@ -1,3 +1,7 @@
+## 1.0.21 (2015-01-28)
+
+- support for express in addition to restify
+
 ## 1.0.20 (2015-01-21)
 
 - write out a metadata for logging in addition to requests.log
