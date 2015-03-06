@@ -1,3 +1,11 @@
+## 1.0.24 (2015-01-31)
+
+- always log request logs at trace level, regardless of console log level
+
+## 1.0.22 (2015-01-31)
+
+- switch requests.log to use rotating file by default
+
 ## 1.0.21 (2015-01-28)
 
 - support for express in addition to restify
