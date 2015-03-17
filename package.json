@@ -31,7 +31,9 @@
 	},
 	"keywords": [
 		"appcelerator",
-		"logger"
+		"logger",
+		"appc-client",
+		"appc-jira-cli"
 	],
 	"author": "Jeff Haynie",
 	"license": "Apache-2",
