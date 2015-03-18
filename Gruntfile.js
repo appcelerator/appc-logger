@@ -13,9 +13,9 @@ module.exports = function(grunt) {
 			},
 			src: ['test/**/*.js']
 		},
-		jshint: {
+		appcJs: {
 			options: {
-				jshintrc: true
+				force: true
 			},
 			src: ['lib/**/*.js', 'test/**/*.js']
 		},
@@ -30,7 +30,7 @@ module.exports = function(grunt) {
 
 	// Load grunt plugins for modules
 	grunt.loadNpmTasks('grunt-mocha-test');
-	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-appc-js');
 	grunt.loadNpmTasks('grunt-contrib-clean');
 
 	// set required env vars
@@ -58,5 +58,5 @@ module.exports = function(grunt) {
 
 	// register tasks
 	grunt.registerTask('cover', ['clean:pre', 'env', 'coverage', 'clean:post']);
-	grunt.registerTask('default', ['clean:pre', 'env', 'jshint', 'mochaTest', 'clean:post']);
+	grunt.registerTask('default', ['clean:pre', 'env', 'appcJs', 'mochaTest', 'clean:post']);
 };
