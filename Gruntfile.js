@@ -15,7 +15,7 @@ module.exports = function(grunt) {
 		},
 		appcJs: {
 			options: {
-				force: true
+				force: false
 			},
 			src: ['lib/**/*.js', 'test/**/*.js']
 		},

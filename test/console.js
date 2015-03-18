@@ -1,3 +1,4 @@
+// jshint -W079
 var should = require('should'),
 	util = require('util'),
 	ConsoleClass = require('./_console'),
@@ -8,24 +9,24 @@ var should = require('should'),
 	defaultTravis = process.env.TRAVIS,
 	defaultArgs = process.argv;
 
-describe("console", function(){
+describe('console', function () {
 
-	before(function(){
+	before(function () {
 		ConsoleLogger.resetColorize();
 	});
 
-	after(function(){
+	after(function () {
 		_console.stop();
 		ConsoleLogger.resetColorize();
 		process.env.TRAVIS = defaultTravis;
 		process.argv = defaultArgs;
 	});
 
-	it("should be able to log at info", function(callback){
+	it('should be able to log at info', function (callback) {
 		should(ConsoleLogger).be.an.object;
 		try {
 			_console.start();
-			_console.on('data',function(buf){
+			_console.on('data', function (buf) {
 				_console.stop();
 				should(buf).equal('INFO   | hello');
 				callback();
@@ -40,11 +41,11 @@ describe("console", function(){
 		}
 	});
 
-	it("should be able to log at debug", function(callback){
+	it('should be able to log at debug', function (callback) {
 		should(ConsoleLogger).be.an.object;
 		try {
 			_console.start();
-			_console.on('data',function(buf){
+			_console.on('data', function (buf) {
 				_console.stop();
 				should(buf).equal('DEBUG  | hello');
 				callback();
@@ -59,11 +60,11 @@ describe("console", function(){
 		}
 	});
 
-	it("should be able to log at trace", function(callback){
+	it('should be able to log at trace', function (callback) {
 		should(ConsoleLogger).be.an.object;
 		try {
 			_console.start();
-			_console.on('data',function(buf){
+			_console.on('data', function (buf) {
 				_console.stop();
 				should(buf).equal('TRACE  | hello');
 				callback();
@@ -78,11 +79,11 @@ describe("console", function(){
 		}
 	});
 
-	it("should be able to log at warn", function(callback){
+	it('should be able to log at warn', function (callback) {
 		should(ConsoleLogger).be.an.object;
 		try {
 			_console.start();
-			_console.on('data',function(buf){
+			_console.on('data', function (buf) {
 				_console.stop();
 				should(buf).equal('WARN   | hello');
 				callback();
@@ -97,11 +98,11 @@ describe("console", function(){
 		}
 	});
 
-	it("should be able to log at error", function(callback){
+	it('should be able to log at error', function (callback) {
 		should(ConsoleLogger).be.an.object;
 		try {
 			_console.start();
-			_console.on('data',function(buf){
+			_console.on('data', function (buf) {
 				_console.stop();
 				should(buf).equal('ERROR  | hello');
 				callback();
@@ -116,11 +117,11 @@ describe("console", function(){
 		}
 	});
 
-	it("should be able to log at fatal", function(callback){
+	it('should be able to log at fatal', function (callback) {
 		should(ConsoleLogger).be.an.object;
 		try {
 			_console.start();
-			_console.on('data',function(buf){
+			_console.on('data', function (buf) {
 				_console.stop();
 				should(buf).equal('FATAL  | hello');
 				callback();
@@ -135,11 +136,11 @@ describe("console", function(){
 		}
 	});
 
-	it("should be able to log with object but have it ignored", function(callback){
+	it('should be able to log with object but have it ignored', function (callback) {
 		should(ConsoleLogger).be.an.object;
 		try {
 			_console.start();
-			_console.on('data',function(buf){
+			_console.on('data', function (buf) {
 				_console.stop();
 				should(buf).equal('INFO   | hello');
 				callback();
@@ -147,17 +148,17 @@ describe("console", function(){
 			var logger = index.createDefaultLogger();
 			should(logger).be.an.object;
 			should(logger.info).be.a.function;
-			logger.info({a:1},'hello');
+			logger.info({a:1}, 'hello');
 		}
 		finally {
 			_console.stop();
 		}
 	});
 
-	it("should be able to use format symbols", function(callback){
+	it('should be able to use format symbols', function (callback) {
 		try {
 			_console.start();
-			_console.on('data',function(buf){
+			_console.on('data', function (buf) {
 				_console.stop();
 				should(buf).equal('INFO   | hello world 1');
 				callback();
@@ -165,18 +166,18 @@ describe("console", function(){
 			var logger = index.createDefaultLogger();
 			should(logger).be.an.object;
 			should(logger.info).be.a.function;
-			logger.info('hello %s %d','world',1);
+			logger.info('hello %s %d', 'world', 1);
 		}
 		finally {
 			_console.stop();
 		}
 	});
 
-	it("should remove color coding", function(callback){
+	it('should remove color coding', function (callback) {
 		var console_ = new ConsoleClass(false);
 		try {
 			console_.start();
-			console_.on('data',function(buf){
+			console_.on('data', function (buf) {
 				console_.stop();
 				should(buf).equal('INFO   | hello world 1');
 				callback();
@@ -187,19 +188,18 @@ describe("console", function(){
 			should(logger).be.an.object;
 			should(logger.info).be.a.function;
 			var chalk = require('chalk');
-			logger.info('hello %s %d',chalk.red('world'),1);
+			logger.info('hello %s %d', chalk.red('world'), 1);
 		}
 		finally {
 			console_.stop();
 		}
 	});
 
-
-	it("should remove log level", function(callback){
+	it('should remove log level', function (callback) {
 		var console_ = new ConsoleClass(false);
 		try {
 			console_.start();
-			console_.on('data',function(buf){
+			console_.on('data', function (buf) {
 				console_.stop();
 				should(buf).equal('hello world');
 				callback();
@@ -214,15 +214,15 @@ describe("console", function(){
 		}
 	});
 
-	it("should remove carriage return marker", function(callback){
+	it('should remove carriage return marker', function (callback) {
 		try {
 			_console.start();
-			_console.on('data',function(buf){
+			_console.on('data', function (buf) {
 				_console.stop();
 				should(buf).equal('hello\nworld');
 				callback();
 			});
-			var logger = index.createLogger({prefix:false,showcr:false});
+			var logger = index.createLogger({prefix:false, showcr:false});
 			should(logger).be.an.object;
 			should(logger.info).be.a.function;
 			logger.info('hello\nworld');
@@ -232,10 +232,10 @@ describe("console", function(){
 		}
 	});
 
-	it("should show carriage return marker", function(callback){
+	it('should show carriage return marker', function (callback) {
 		try {
 			_console.start();
-			_console.on('data',function(buf){
+			_console.on('data', function (buf) {
 				_console.stop();
 				should(buf).equal('hello↩\nworld↩');
 				callback();
@@ -250,10 +250,10 @@ describe("console", function(){
 		}
 	});
 
-	it("should show tab marker", function(callback){
+	it('should show tab marker', function (callback) {
 		try {
 			_console.start();
-			_console.on('data',function(buf){
+			_console.on('data', function (buf) {
 				_console.stop();
 				should(buf).equal('hello\t↠world');
 				callback();
@@ -268,10 +268,10 @@ describe("console", function(){
 		}
 	});
 
-	it("should remove tab marker", function(callback){
+	it('should remove tab marker', function (callback) {
 		try {
 			_console.start();
-			_console.on('data',function(buf){
+			_console.on('data', function (buf) {
 				_console.stop();
 				should(buf).equal('hello\tworld');
 				callback();
@@ -286,11 +286,11 @@ describe("console", function(){
 		}
 	});
 
-	it("should log the record if there is no message", function(callback){
+	it('should log the record if there is no message', function (callback) {
 		try {
 			this.timeout(1000);
 			_console.start(1000);
-			_console.on('data',function(buf){
+			_console.on('data', function (buf) {
 				_console.stop();
 				should(buf).equal(util.format({'hello':'world'}));
 				callback();
@@ -305,11 +305,11 @@ describe("console", function(){
 		}
 	});
 
-	it("should mask log record if only argument", function(callback){
+	it('should mask log record if only argument', function (callback) {
 		try {
 			this.timeout(1000);
 			_console.start(1000);
-			_console.on('data',function(buf){
+			_console.on('data', function (buf) {
 				_console.stop();
 				should(buf).not.equal(util.format({'password':'1234'}));
 				should(buf).equal(util.format({'password':'[HIDDEN]'}));
@@ -325,31 +325,31 @@ describe("console", function(){
 		}
 	});
 
-	it("should color code if colorize is specified", function(callback){
+	it('should color code if colorize is specified', function (callback) {
 		var console_ = new ConsoleClass(false);
 		try {
 			chalk.enabled = true;
 			console_.start();
-			console_.on('data',function(buf){
+			console_.on('data', function (buf) {
 				console_.stop();
 				should(buf).equal('\u001b[32mINFO  \u001b[39m \u001b[1m\u001b[90m|\u001b[39m\u001b[22m hello \u001b[31mworld\u001b[39m 1');
 				callback();
 			});
-			var logger = index.createDefaultLogger({colorize:true,problemLogger:false});
+			var logger = index.createDefaultLogger({colorize:true, problemLogger:false});
 			should(logger).be.an.object;
 			should(logger.info).be.a.function;
-			logger.info('hello %s %d',chalk.red('world'),1);
+			logger.info('hello %s %d', chalk.red('world'), 1);
 		}
 		finally {
 			console_.stop();
 		}
 	});
 
-	it("should not color code if colorize is specified as false", function(callback){
+	it('should not color code if colorize is specified as false', function (callback) {
 		var console_ = new ConsoleClass(false);
 		try {
 			console_.start();
-			console_.on('data',function(buf){
+			console_.on('data', function (buf) {
 				console_.stop();
 				should(buf).equal('INFO   | hello world 1');
 				callback();
@@ -358,30 +358,30 @@ describe("console", function(){
 			should(logger).be.an.object;
 			should(logger.info).be.a.function;
 			var chalk = require('chalk');
-			logger.info('hello %s %d',chalk.red('world'),1);
+			logger.info('hello %s %d', chalk.red('world'), 1);
 		}
 		finally {
 			console_.stop();
 		}
 	});
 
-	it("should not color code if --no-colors is specified", function(callback){
+	it('should not color code if --no-colors is specified', function (callback) {
 		var console_ = new ConsoleClass(false);
 		var args = process.argv;
 		try {
 			console_.start();
-			console_.on('data',function(buf){
+			console_.on('data', function (buf) {
 				console_.stop();
 				should(buf).equal('INFO   | hello world 1');
 				callback();
 			});
-			process.argv = ['node','--no-colors'];
+			process.argv = ['node', '--no-colors'];
 			ConsoleLogger.resetColorize();
 			var logger = index.createDefaultLogger();
 			should(logger).be.an.object;
 			should(logger.info).be.a.function;
 			var chalk = require('chalk');
-			logger.info('hello %s %d',chalk.red('world'),1);
+			logger.info('hello %s %d', chalk.red('world'), 1);
 		}
 		finally {
 			console_.stop();
@@ -389,23 +389,23 @@ describe("console", function(){
 		}
 	});
 
-	it("should not color code if --no-color is specified", function(callback){
+	it('should not color code if --no-color is specified', function (callback) {
 		var console_ = new ConsoleClass(false);
 		var args = process.argv;
 		try {
 			console_.start();
-			console_.on('data',function(buf){
+			console_.on('data', function (buf) {
 				console_.stop();
 				should(buf).equal('INFO   | hello world 1');
 				callback();
 			});
-			process.argv = ['node','--no-color'];
+			process.argv = ['node', '--no-color'];
 			ConsoleLogger.resetColorize();
 			var logger = index.createDefaultLogger();
 			should(logger).be.an.object;
 			should(logger.info).be.a.function;
 			var chalk = require('chalk');
-			logger.info('hello %s %d',chalk.red('world'),1);
+			logger.info('hello %s %d', chalk.red('world'), 1);
 		}
 		finally {
 			console_.stop();
@@ -413,28 +413,27 @@ describe("console", function(){
 		}
 	});
 
-	it("should color code if --colorize is specified", function(callback){
+	it('should color code if --colorize is specified', function (callback) {
 		var console_ = new ConsoleClass(false);
 		var args = process.argv;
 		try {
 			console_.start();
-			console_.on('data',function(buf){
+			console_.on('data', function (buf) {
 				console_.stop();
 				should(buf).equal('\u001b[32mINFO  \u001b[39m \u001b[1m\u001b[90m|\u001b[39m\u001b[22m hello \u001b[31mworld\u001b[39m 1');
 				callback();
 			});
-			process.argv = ['node','--colorize'];
+			process.argv = ['node', '--colorize'];
 			ConsoleLogger.resetColorize();
 			var logger = index.createDefaultLogger();
 			should(logger).be.an.object;
 			should(logger.info).be.a.function;
 			var chalk = require('chalk');
-			logger.info('hello %s %d',chalk.red('world'),1);
+			logger.info('hello %s %d', chalk.red('world'), 1);
 		}
 		finally {
 			console_.stop();
 			process.argv = args;
 		}
 	});
-
 });
