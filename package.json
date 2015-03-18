@@ -17,7 +17,8 @@
 		"grunt-contrib-clean": "^0.6.0",
 		"grunt-appc-js": "^1.0.0",
 		"grunt-mocha-test": "^0.12.0",
-		"istanbul": "^0.3.2",
+	    "grunt-kahvesi": "^0.2.0",
+	    "grunt-appc-coverage": "^0.2.0",
 		"mocha": "^1.21.4",
 		"restify": "^2.8.2",
 		"should": "^4.0.4"

@@ -1,4 +1,5 @@
 # Overview [![Build Status](https://travis-ci.org/appcelerator/appc-logger.png)](https://travis-ci.org/appcelerator/appc-logger)
+[![Coverage Status](https://coverage.appcelerator.com/appcelerator/appc-logger/label_master.svg)](https://coverage.appcelerator.com/appcelerator#appc-logger)
 
 ## Introduction
 
