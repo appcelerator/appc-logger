@@ -325,6 +325,123 @@ describe('console', function () {
 		}
 	});
 
+	it('should mask log arguments', function (callback) {
+		try {
+			this.timeout(1000);
+			_console.start(1000);
+			_console.on('data', function (buf) {
+				_console.stop();
+				should(buf).equal('your password is ' + util.format({'password':'[HIDDEN]'}));
+				callback();
+			});
+			var logger = index.createLogger({prefix:false, showtab:false});
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			logger.info('your password is', {'password':'1234'});
+		}
+		finally {
+			_console.stop();
+		}
+	});
+
+	it('should mask log arguments that are nested', function (callback) {
+		try {
+			this.timeout(1000);
+			_console.start(1000);
+			_console.on('data', function (buf) {
+				_console.stop();
+				should(buf).equal('your password is ' + util.format({foo:{'password':'[HIDDEN]'}}));
+				callback();
+			});
+			var logger = index.createLogger({prefix:false, showtab:false});
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			logger.info('your password is', {foo:{'password':'1234'}});
+		}
+		finally {
+			_console.stop();
+		}
+	});
+
+	it('should mask log arguments that are nested as 3rd arg', function (callback) {
+		try {
+			this.timeout(1000);
+			_console.start(1000);
+			_console.on('data', function (buf) {
+				_console.stop();
+				should(buf).equal('your password is ' + util.format({}) + ' ' + util.format({foo:{'password':'[HIDDEN]'}}));
+				callback();
+			});
+			var logger = index.createLogger({prefix:false, showtab:false});
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			logger.info('your password is', {}, {foo:{'password':'1234'}});
+		}
+		finally {
+			_console.stop();
+		}
+	});
+
+	it('should mask log arguments using format', function (callback) {
+		try {
+			this.timeout(1000);
+			_console.start(1000);
+			_console.on('data', function (buf) {
+				_console.stop();
+				should(buf).equal(util.format('your password is %j', {'password':'[HIDDEN]'}));
+				callback();
+			});
+			var logger = index.createLogger({prefix:false, showtab:false});
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			logger.info('your password is %j', {'password':'1234'});
+		}
+		finally {
+			_console.stop();
+		}
+	});
+
+	it('should handle circular references', function (callback) {
+		try {
+			this.timeout(1000);
+			_console.start(1000);
+			_console.on('data', function (buf) {
+				_console.stop();
+				should(buf).equal('nested object is { key: { key: \'[Circular]\' } }');
+				callback();
+			});
+			var obj = {};
+			obj.key = obj;
+			var logger = index.createLogger({prefix:false, showtab:false});
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			logger.info('nested object is', obj);
+		}
+		finally {
+			_console.stop();
+		}
+	});
+
+	it('should handle circular references', function (callback) {
+		try {
+			this.timeout(1000);
+			_console.start(1000);
+			_console.on('data', function (buf) {
+				_console.stop();
+				should(buf).equal('nested object is { key: { key: \'[Circular]\' } }');
+				callback();
+			});
+			var obj = {};
+			obj.key = obj;
+			var logger = index.createLogger({prefix:false, showtab:false});
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			logger.info('nested object is', obj);
+		}
+		finally {
+			_console.stop();
+		}
+	});
 	it('should color code if colorize is specified', function (callback) {
 		var console_ = new ConsoleClass(false);
 		try {

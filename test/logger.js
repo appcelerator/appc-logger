@@ -150,7 +150,6 @@ describe('logger', function () {
 					should(contents).have.property('msg', '');
 					should(contents).have.property('level', 30);
 					should(contents).have.property('logname', logfn);
-
 					callback();
 				});
 
