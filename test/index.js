@@ -48,4 +48,15 @@ describe('index', function () {
 		index.FATAL.should.equal(bunyan.FATAL);
 	});
 
+	it('should log error', function (callback) {
+		var logger = index.createDefaultLogger();
+		var consoleLogger = logger.streams[0].stream;
+		consoleLogger.write = function (record) {
+			should(record.msg).be.equal('error');
+			callback();
+			return true;
+		};
+		logger.info(new Error('error'));
+	});
+
 });
