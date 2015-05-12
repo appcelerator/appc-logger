@@ -19,8 +19,14 @@ module.exports = function(grunt) {
 			},
 			src: ['lib/**/*.js', 'test/**/*.js']
 		},
-		coverage: {
+		kahvesi: {
 			src: ['test/**/*.js']
+		},
+		appcCoverage: {
+			default_options: {
+				src: 'coverage/lcov.info',
+				force: true
+			}
 		},
 		clean: {
 			pre: ['*.log'],
@@ -32,6 +38,8 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-mocha-test');
 	grunt.loadNpmTasks('grunt-appc-js');
 	grunt.loadNpmTasks('grunt-contrib-clean');
+	grunt.loadNpmTasks('grunt-kahvesi');
+	grunt.loadNpmTasks('grunt-appc-coverage');
 
 	// set required env vars
 	grunt.registerTask('env', function() {
@@ -57,6 +65,6 @@ module.exports = function(grunt) {
 	});
 
 	// register tasks
-	grunt.registerTask('cover', ['clean:pre', 'env', 'coverage', 'clean:post']);
+	grunt.registerTask('cover', ['clean:pre', 'env', 'kahvesi', 'appcCoverage', 'clean:post']);
 	grunt.registerTask('default', ['clean:pre', 'env', 'appcJs', 'mochaTest', 'clean:post']);
 };
