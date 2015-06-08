@@ -68,7 +68,7 @@ describe('logger', function () {
 			server.listen(port, function (err) {
 				should(err).be.not.ok;
 
-				var logger = index.createRestifyLogger(server, {logs:tmpdir});
+				var logger = index.createRestifyLogger(server, {logs:tmpdir, logSingleRequest:true});
 				should(logger).be.an.object;
 				should(logger.info).be.a.function;
 
@@ -135,7 +135,7 @@ describe('logger', function () {
 					should(contents).have.property('logname', logfn);
 					should(contents).have.property('req_id', reqid);
 					should(contents).have.property('req_headers');
-					should(contents).have.property('duration');
+					should(contents).have.property('response_time');
 					should(contents).have.property('name', path.basename(fn).replace('.log', ''));
 
 					// now validate that our request is logged that points to our

@@ -1,6 +1,6 @@
 {
 	"name": "appc-logger",
-	"version": "1.0.35",
+	"version": "1.1.0",
 	"description": "Appcelerator Logger",
 	"main": "index.js",
 	"dependencies": {
@@ -9,7 +9,10 @@
 		"chalk": "^0.5.1",
 		"fs-extra": "^0.11.1",
 		"lodash": "^2.4.1",
+		"on-headers": "^1.0.0",
 		"progress": "^1.1.8",
+		"response-time": "^2.3.1",
+		"uuid-v4": "^0.1.0",
 		"wrench": "^1.5.8"
 	},
 	"devDependencies": {
