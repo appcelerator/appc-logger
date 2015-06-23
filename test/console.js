@@ -41,6 +41,29 @@ describe('console', function () {
 		}
 	});
 
+	it('should be able to set level', function (callback) {
+		should(ConsoleLogger).be.an.object;
+		try {
+			_console.start();
+			_console.on('data', function (buf) {
+				_console.stop();
+				should(buf).equal('INFO   | hello');
+				callback();
+			});
+			var logger = index.createDefaultLogger();
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			should(logger.level).be.a.function;
+			should(logger.setLevel).be.a.function;
+			logger.setLevel('info');
+			logger.debug('goodbye');
+			logger.info('hello');
+		}
+		finally {
+			_console.stop();
+		}
+	});
+
 	it('should be able to log at debug', function (callback) {
 		should(ConsoleLogger).be.an.object;
 		try {
