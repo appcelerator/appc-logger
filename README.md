@@ -1,10 +1,8 @@
-# Overview [![Build Status](https://travis-ci.org/appcelerator/appc-logger.png)](https://travis-ci.org/appcelerator/appc-logger)
+# Appcelerator Logger 
 
-## Introduction
+> This is a library for creating a Logger to be used by AppC Node applications. The internal logger is a [Bunyan](https://github.com/trentm/node-bunyan) logger instance.
 
-This is a library for creating a Logger to be used by AppC Node applications.
-
-The internal logger is a [Bunyan](https://github.com/trentm/node-bunyan) logger instance.
+[![Build Status](https://travis-ci.org/appcelerator/appc-logger.png)](https://travis-ci.org/appcelerator/appc-logger)
 
 ## Default Logger
 
