@@ -3,3 +3,11 @@ sudo: false
 node_js:
 - '0.10'
 - '0.12'
+deploy:
+  provider: npm
+  email: npmjs@appcelerator.com
+  api_key:
+    secure: JiXCmFOCnhQ/XxIty077stQRNDzBnK68oJrTO5DvJxL+ztwLQLP///0sUiJbQL0y++dC+G2GbyhQi/mGj0p2cN3bWgNb+0RL6YBxaF+HBaw1COBBvBlEwF5fFpDXWpVVf5p3dT/+KHM5gQhnFFOZeaObH5AIDkR0Y56ayHLhO08=
+  on:
+    tags: true
+    repo: appcelerator/appc-logger
