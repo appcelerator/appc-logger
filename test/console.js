@@ -348,6 +348,46 @@ describe('console', function () {
 		}
 	});
 
+	it('should mask password confirmation with dash', function (callback) {
+		try {
+			this.timeout(1000);
+			_console.start(1000);
+			_console.on('data', function (buf) {
+				_console.stop();
+				should(buf).not.equal(util.format({'password-confirmation':'1234'}));
+				should(buf).equal(util.format({'password-confirmation':'[HIDDEN]'}));
+				callback();
+			});
+			var logger = index.createLogger({prefix:false, showtab:false});
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			logger.info({'password-confirmation':'1234'});
+		}
+		finally {
+			_console.stop();
+		}
+	});
+
+	it('should mask password confirmation with underscore', function (callback) {
+		try {
+			this.timeout(1000);
+			_console.start(1000);
+			_console.on('data', function (buf) {
+				_console.stop();
+				should(buf).not.equal(util.format({'password_confirmation':'1234'}));
+				should(buf).equal(util.format({'password_confirmation':'[HIDDEN]'}));
+				callback();
+			});
+			var logger = index.createLogger({prefix:false, showtab:false});
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			logger.info({'password_confirmation':'1234'});
+		}
+		finally {
+			_console.stop();
+		}
+	});
+
 	it('should mask log arguments', function (callback) {
 		try {
 			this.timeout(1000);
