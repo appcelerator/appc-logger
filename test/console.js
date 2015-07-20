@@ -505,6 +505,45 @@ describe('console', function () {
 			_console.stop();
 		}
 	});
+
+	it('should handle buffer references', function (callback) {
+		try {
+			this.timeout(1000);
+			_console.start(1000);
+			_console.on('data', function (buf) {
+				_console.stop();
+				should(buf).equal('buffer is [Buffer]');
+				callback();
+			});
+			var logger = index.createLogger({prefix:false, showtab:false});
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			logger.info('buffer is', new Buffer('hello'));
+		}
+		finally {
+			_console.stop();
+		}
+	});
+
+	it('should handle RegExp references', function (callback) {
+		try {
+			this.timeout(1000);
+			_console.start(1000);
+			_console.on('data', function (buf) {
+				_console.stop();
+				should(buf).equal('buffer is /^foo$/');
+				callback();
+			});
+			var logger = index.createLogger({prefix:false, showtab:false});
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			logger.info('buffer is', /^foo$/);
+		}
+		finally {
+			_console.stop();
+		}
+	});
+
 	it('should color code if colorize is specified', function (callback) {
 		var console_ = new ConsoleClass(false);
 		try {
