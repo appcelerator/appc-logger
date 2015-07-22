@@ -632,7 +632,7 @@ describe('console', function () {
 		}
 	});
 
-	it('should color code if --colorize is specified', function (callback) {
+	it.skip('should color code if --colorize is specified', function (callback) {
 		var console_ = new ConsoleClass(false);
 		var args = process.argv;
 		try {
