@@ -544,25 +544,25 @@ describe('console', function () {
 		}
 	});
 
-	// it('should color code if colorize is specified', function (callback) {
-	// 	var console_ = new ConsoleClass(false);
-	// 	try {
-	// 		chalk.enabled = true;
-	// 		console_.start();
-	// 		console_.on('data', function (buf) {
-	// 			console_.stop();
-	// 			should(buf).equal('\u001b[32mINFO  \u001b[39m \u001b[1m\u001b[90m|\u001b[39m\u001b[22m hello \u001b[31mworld\u001b[39m 1');
-	// 			callback();
-	// 		});
-	// 		var logger = index.createDefaultLogger({colorize:true, problemLogger:false});
-	// 		should(logger).be.an.object;
-	// 		should(logger.info).be.a.function;
-	// 		logger.info('hello %s %d', chalk.red('world'), 1);
-	// 	}
-	// 	finally {
-	// 		console_.stop();
-	// 	}
-	// });
+	it.skip('should color code if colorize is specified', function (callback) {
+		var console_ = new ConsoleClass(false);
+		try {
+			chalk.enabled = true;
+			console_.start();
+			console_.on('data', function (buf) {
+				console_.stop();
+				should(buf).equal('\u001b[32mINFO  \u001b[39m \u001b[1m\u001b[90m|\u001b[39m\u001b[22m hello \u001b[31mworld\u001b[39m 1');
+				callback();
+			});
+			var logger = index.createDefaultLogger({colorize:true, problemLogger:false});
+			should(logger).be.an.object;
+			should(logger.info).be.a.function;
+			logger.info('hello %s %d', chalk.red('world'), 1);
+		}
+		finally {
+			console_.stop();
+		}
+	});
 
 	it('should not color code if colorize is specified as false', function (callback) {
 		var console_ = new ConsoleClass(false);
