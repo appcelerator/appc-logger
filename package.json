@@ -1,6 +1,6 @@
 {
 	"name": "appc-logger",
-	"version": "1.1.11",
+	"version": "1.1.12",
 	"description": "Appcelerator Logger",
 	"main": "index.js",
 	"dependencies": {
