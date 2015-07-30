@@ -1,14 +1,14 @@
 {
 	"name": "appc-logger",
-	"version": "1.1.11",
+	"version": "1.1.12",
 	"description": "Appcelerator Logger",
 	"main": "index.js",
 	"dependencies": {
-		"async": "^0.9.0",
-		"bunyan": "~1.1.0",
-		"chalk": "^0.5.1",
-		"fs-extra": "^0.11.1",
-		"lodash": "^2.4.1",
+		"async": "^1.4.0",
+		"bunyan": "~1.4.0",
+		"chalk": "^1.1.0",
+		"fs-extra": "^0.22.1",
+		"lodash": "^3.10.0",
 		"on-headers": "^1.0.0",
 		"progress": "^1.1.8",
 		"readable-stream": "^2.0.1",
@@ -23,9 +23,9 @@
 		"grunt-appc-js": "^1.0.0",
 		"grunt-mocha-test": "^0.12.0",
 		"istanbul": "^0.3.2",
-		"mocha": "^1.21.4",
-		"restify": "^2.8.2",
-		"should": "^4.0.4"
+		"mocha": "^2.2.5",
+		"restify": "^3.0.3",
+		"should": "^7.0.2"
 	},
 	"scripts": {
 		"test": "grunt"
