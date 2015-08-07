@@ -6,23 +6,22 @@ var should = require('should'),
 	_console = new (require('./_console'))(),
 	restify = require('restify'),
 	path = require('path'),
-	fs = require('fs'),
-	wrench = require('wrench'),
+	fs = require('fs-extra'),
 	tmpdir = path.join(require('os').tmpdir(), 'test-logger-' + Date.now());
 
 describe('logger', function () {
 
-	before(function () {
+	before(function (done) {
 		try {
-			wrench.mkdirSyncRecursive(tmpdir);
+			fs.mkdirs(tmpdir, done);
 		}
 		catch (E) {
 		}
 	});
 
-	after(function () {
+	after(function (done) {
 		_console.stop();
-		wrench.rmdirSyncRecursive(tmpdir);
+		fs.emptyDir(tmpdir, done);
 	});
 
 	it('should be able to load', function () {
