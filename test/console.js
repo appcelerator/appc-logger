@@ -655,4 +655,25 @@ describe('console', function () {
 			process.argv = args;
 		}
 	});
+
+	it('should prepend pid for cluster worker logs', function (callback) {
+		var spawn = require('child_process').spawn;
+		var path = require('path');
+		var child = spawn(process.execPath, [path.join(__dirname, '_cluster.js')], {cwd: __dirname});
+		var output;
+		child.stdout.on('data', function (buf) {
+			output = String(buf);
+		});
+		child.stderr.on('data', function (buf) {
+			console.log(String(buf));
+		});
+		child.on('exit', function (err) {
+			if (err !== 0) {
+				callback(new Error('exit code ' + err));
+			} else {
+				should(output).match(/INFO\s|\s(\d+)\s|\shello/);
+				callback();
+			}
+		});
+	});
 });
