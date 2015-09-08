@@ -4,9 +4,10 @@ var should = require('should'),
 	index = require('../'),
 	_util = require('./_util'),
 	_console = new (require('./_console'))(),
-	restify = require('restify'),
 	path = require('path'),
 	fs = require('fs-extra'),
+	express = require('express'),
+	request = require('request'),
 	tmpdir = path.join(require('os').tmpdir(), 'test-logger-' + Date.now());
 
 describe('logger', function () {
@@ -57,17 +58,17 @@ describe('logger', function () {
 		}, 100);
 	});
 
-	it('should be able to log restify requests', function (callback) {
+	it('should be able to log requests', function (callback) {
 
-		var server = restify.createServer();
+		var app = express();
 
 		_util.findRandomPort(function (err, port) {
 			should(err).be.not.ok;
 			should(port).be.a.number;
-			server.listen(port, function (err) {
+			var server = app.listen(port, function (err) {
 				should(err).be.not.ok;
 
-				var logger = index.createRestifyLogger(server, {logs:tmpdir, logSingleRequest:true});
+				var logger = index.createExpressLogger(app, {logs:tmpdir, logSingleRequest:true});
 				should(logger).be.an.object;
 				should(logger.info).be.a.function;
 
@@ -77,30 +78,25 @@ describe('logger', function () {
 				_console.start();
 				try {
 					logger.info('hello');
-					server.log.info('hello');
+					app.log.info('hello');
 				}
 				finally {
 					_console.stop();
 				}
 
-				server.pre(restify.pre.sanitizePath())
-					.pre(restify.pre.userAgentConnection())
-					.use(restify.fullResponse())
-					.use(restify.bodyParser())
-					.use(restify.gzipResponse())
-					.use(restify.queryParser());
+				app.use(function (req, resp, next) {
+					resp.set('request-id', req.requestId);
+					next();
+				});
 
-				server.get('/echo', function (req, resp, next) {
+				app.get('/echo', function (req, resp, next) {
 					resp.send({hello:'world'});
 					next();
 				});
 
-				var client = restify.createJsonClient({
-					url: 'http://localhost:' + port
-				});
-
-				client.get('/echo', function (err, req, res, obj) {
+				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
 					should(err).not.be.ok;
+					var obj = body && JSON.parse(body);
 					should(obj).be.an.object;
 					should(obj).eql({hello:'world'});
 					should(res.headers).be.an.object;
