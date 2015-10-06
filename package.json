@@ -27,6 +27,9 @@
   "scripts": {
     "test": "grunt"
   },
+  "bugs": {
+    "url": "https://jira.appcelerator.org/browse/API"
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:appcelerator/appc-logger.git"
