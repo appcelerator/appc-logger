@@ -9,6 +9,14 @@ var should = require('should'),
 	defaultTravis = process.env.TRAVIS,
 	defaultArgs = process.argv;
 
+/**
+ * Adds a regular expression that will match the timestamp added to debug and trace logs.
+ * @returns {RegExp}
+ */
+String.prototype.withTimestampPrefix = function () {
+	return new RegExp('\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3}Z | ' + this);
+};
+
 describe('console', function () {
 
 	before(function () {
@@ -70,7 +78,7 @@ describe('console', function () {
 			_console.start();
 			_console.on('data', function (buf) {
 				_console.stop();
-				should(buf).equal('DEBUG  | hello');
+				should(buf).match('DEBUG  | hello'.withTimestampPrefix());
 				callback();
 			});
 			var logger = index.createDefaultLogger();
@@ -89,7 +97,7 @@ describe('console', function () {
 			_console.start();
 			_console.on('data', function (buf) {
 				_console.stop();
-				should(buf).equal('TRACE  | hello');
+				should(buf).match('TRACE  | hello'.withTimestampPrefix());
 				callback();
 			});
 			var logger = index.createDefaultLogger();
