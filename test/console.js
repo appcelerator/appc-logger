@@ -4,6 +4,7 @@ var should = require('should'),
 	ConsoleClass = require('./_console'),
 	_console = new ConsoleClass(),
 	index = require('../'),
+	debug = require('debug')('appc:logger'),
 	chalk = require('chalk'),
 	ConsoleLogger = index.ConsoleLogger,
 	defaultTravis = process.env.TRAVIS,
@@ -14,7 +15,18 @@ var should = require('should'),
  * @returns {RegExp}
  */
 String.prototype.withTimestampPrefix = function () {
-	return new RegExp('\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3}Z | ' + this);
+	var str = this;
+	/**
+	 * Expects a string to have a time prefix followed by a particular value.
+	 */
+	return function withTimestampPrefix(val) {
+		if (!val.match(/^\d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z | /)) {
+			debug('Failed timestamp prefix. Got: ' + val);
+			return false;
+		}
+		return val.indexOf(str) > 0;
+	};
+
 };
 
 describe('console', function () {
@@ -42,6 +54,7 @@ describe('console', function () {
 			var logger = index.createDefaultLogger();
 			should(logger).be.an.object;
 			should(logger.info).be.a.function;
+			logger.setLevel('info');
 			logger.info('hello');
 		}
 		finally {
@@ -70,6 +83,95 @@ describe('console', function () {
 		finally {
 			_console.stop();
 		}
+	});
+
+	it('should log timestamps when the level is set to trace', function (callback) {
+		should(ConsoleLogger).be.an.object;
+		try {
+			_console.start();
+			var data = [];
+			_console.on('data', function (buf) {
+				data.push(buf);
+				debug(buf);
+			});
+			var logger = index.createDefaultLogger();
+			logger.setLevel('trace');
+			logger.trace('i am trace');
+			should(data[0]).match('TRACE  | i am trace'.withTimestampPrefix());
+			logger.debug('i am debug');
+			should(data[1]).match('DEBUG  | i am debug'.withTimestampPrefix());
+			logger.info('i am info');
+			should(data[2]).match('INFO   | i am info'.withTimestampPrefix());
+			logger.warn('i am warn');
+			should(data[3]).match('WARN   | i am warn'.withTimestampPrefix());
+			logger.error('i am error');
+			should(data[4]).match('ERROR  | i am error'.withTimestampPrefix());
+			logger.fatal('i am fatal');
+			should(data[5]).match('FATAL  | i am fatal'.withTimestampPrefix());
+		}
+		finally {
+			_console.stop();
+		}
+		callback();
+	});
+
+	it('should not log timestamps when the level is set to info', function (callback) {
+		should(ConsoleLogger).be.an.object;
+		try {
+			_console.start();
+			var data = [];
+			_console.on('data', function (buf) {
+				data.push(buf);
+				debug(buf);
+			});
+			var logger = index.createDefaultLogger();
+			logger.setLevel('info');
+			logger.trace('i am trace');
+			logger.debug('i am debug');
+			should(data).have.property('length', 0);
+			logger.info('i am info');
+			should(data[0]).equal('INFO   | i am info');
+			logger.warn('i am warn');
+			should(data[1]).equal('WARN   | i am warn');
+			logger.error('i am error');
+			should(data[2]).equal('ERROR  | i am error');
+			logger.fatal('i am fatal');
+			should(data[3]).equal('FATAL  | i am fatal');
+		}
+		finally {
+			_console.stop();
+		}
+		callback();
+	});
+
+	it('should log timestamps when the level is set to debug', function (callback) {
+		should(ConsoleLogger).be.an.object;
+		try {
+			_console.start();
+			var data = [];
+			_console.on('data', function (buf) {
+				debug(buf);
+				data.push(buf);
+			});
+			var logger = index.createDefaultLogger();
+			logger.setLevel('debug');
+			logger.trace('i am trace');
+			should(data).have.property('length', 0);
+			logger.debug('i am debug');
+			should(data[0]).match('DEBUG  | i am debug'.withTimestampPrefix());
+			logger.info('i am info');
+			should(data[1]).match('INFO   | i am info'.withTimestampPrefix());
+			logger.warn('i am warn');
+			should(data[2]).match('WARN   | i am warn'.withTimestampPrefix());
+			logger.error('i am error');
+			should(data[3]).match('ERROR  | i am error'.withTimestampPrefix());
+			logger.fatal('i am fatal');
+			should(data[4]).match('FATAL  | i am fatal'.withTimestampPrefix());
+		}
+		finally {
+			_console.stop();
+		}
+		callback();
 	});
 
 	it('should be able to log at debug', function (callback) {
@@ -120,8 +222,7 @@ describe('console', function () {
 				callback();
 			});
 			var logger = index.createDefaultLogger();
-			should(logger).be.an.object;
-			should(logger.info).be.a.function;
+			logger.setLevel('info');
 			logger.warn('hello');
 		}
 		finally {
@@ -139,8 +240,7 @@ describe('console', function () {
 				callback();
 			});
 			var logger = index.createDefaultLogger();
-			should(logger).be.an.object;
-			should(logger.info).be.a.function;
+			logger.setLevel('info');
 			logger.error('hello');
 		}
 		finally {
@@ -158,8 +258,7 @@ describe('console', function () {
 				callback();
 			});
 			var logger = index.createDefaultLogger();
-			should(logger).be.an.object;
-			should(logger.info).be.a.function;
+			logger.setLevel('info');
 			logger.fatal('hello');
 		}
 		finally {
@@ -177,8 +276,7 @@ describe('console', function () {
 				callback();
 			});
 			var logger = index.createDefaultLogger();
-			should(logger).be.an.object;
-			should(logger.info).be.a.function;
+			logger.setLevel('info');
 			logger.info({a:1}, 'hello');
 		}
 		finally {
@@ -195,8 +293,7 @@ describe('console', function () {
 				callback();
 			});
 			var logger = index.createDefaultLogger();
-			should(logger).be.an.object;
-			should(logger.info).be.a.function;
+			logger.setLevel('info');
 			logger.info('hello %s %d', 'world', 1);
 		}
 		finally {
@@ -216,8 +313,7 @@ describe('console', function () {
 			process.env.TRAVIS = 1; // force log coloring off
 			ConsoleLogger.resetColorize();
 			var logger = index.createDefaultLogger();
-			should(logger).be.an.object;
-			should(logger.info).be.a.function;
+			logger.setLevel('info');
 			var chalk = require('chalk');
 			logger.info('hello %s %d', chalk.red('world'), 1);
 		}
@@ -582,8 +678,7 @@ describe('console', function () {
 				callback();
 			});
 			var logger = index.createDefaultLogger({colorize:false});
-			should(logger).be.an.object;
-			should(logger.info).be.a.function;
+			logger.setLevel('info');
 			var chalk = require('chalk');
 			logger.info('hello %s %d', chalk.red('world'), 1);
 		}
@@ -605,8 +700,7 @@ describe('console', function () {
 			process.argv = ['node', '--no-colors'];
 			ConsoleLogger.resetColorize();
 			var logger = index.createDefaultLogger();
-			should(logger).be.an.object;
-			should(logger.info).be.a.function;
+			logger.setLevel('info');
 			var chalk = require('chalk');
 			logger.info('hello %s %d', chalk.red('world'), 1);
 		}
@@ -629,8 +723,7 @@ describe('console', function () {
 			process.argv = ['node', '--no-color'];
 			ConsoleLogger.resetColorize();
 			var logger = index.createDefaultLogger();
-			should(logger).be.an.object;
-			should(logger.info).be.a.function;
+			logger.setLevel('info');
 			var chalk = require('chalk');
 			logger.info('hello %s %d', chalk.red('world'), 1);
 		}

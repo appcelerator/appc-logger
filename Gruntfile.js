@@ -9,7 +9,7 @@ module.exports = function(grunt) {
 			options: {
 				timeout: 40000,
 				reporter: 'spec',
-				bail: true
+				bail: false
 			},
 			src: ['test/**/*.js', '!test/**/_*.js']
 		},
