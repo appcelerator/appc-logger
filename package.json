@@ -22,7 +22,7 @@
 		"grunt-mocha-test": "^0.12.0",
 		"istanbul": "^0.3.2",
 		"mocha": "^2.2.5",
-		"request": "^2.61.0",
+		"request": "^2.66.0",
 		"should": "^7.0.2"
 	},
 	"scripts": {
@@ -43,8 +43,5 @@
 	],
 	"author": "Jeff Haynie",
 	"license": "Apache-2.0",
-	"bugs": {
-		"url": "https://github.com/appcelerator/appc-logger/issues"
-	},
 	"homepage": "https://github.com/appcelerator/appc-logger"
 }
