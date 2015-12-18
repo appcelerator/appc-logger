@@ -39,6 +39,34 @@ describe('index', function () {
 		logger.info({obj:{password:'1234'}}, 'hello');
 	});
 
+	it('should mask password in array', function (callback) {
+		var logger = index.createDefaultLogger(),
+		consoleLogger = logger.streams[0].stream;
+
+		consoleLogger.write = function (record) {
+			should(record.obj).be.an.object;
+			should(record.msg).not.containEql('baz');
+			should(record.msg).containEql('--password\', \'[HIDDEN]\' ]');
+			callback();
+			return true;
+		};
+		logger.info(['foo', 'bar', '--password', 'baz'], 'hello');
+	});
+
+	it('should mask password in shorter array', function (callback) {
+		var logger = index.createDefaultLogger(),
+		consoleLogger = logger.streams[0].stream;
+
+		consoleLogger.write = function (record) {
+			should(record.obj).be.an.object;
+			should(record.msg).not.containEql('baz');
+			should(record.msg).containEql('--password\' ]');
+			callback();
+			return true;
+		};
+		logger.info(['--password'], 'hello');
+	});
+
 	it('should expose bunyan constants', function () {
 		index.TRACE.should.equal(bunyan.TRACE);
 		index.DEBUG.should.equal(bunyan.DEBUG);
