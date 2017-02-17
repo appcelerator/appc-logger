@@ -13,7 +13,7 @@ var should = require('should'),
 function readFile (filePath, cb) {
 	fs.readFile(filePath, 'utf8', function (err,data) {
 		if (err) {
-			cb(err);
+			return cb(err);
 		}
 		fs.unlinkSync(filePath);
 		cb(null, data);
@@ -186,7 +186,7 @@ describe('logger', function () {
 				});
 				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
 					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adiAnalytics.log');
+					var logPath = path.join(tmpdir, 'adi-analytics.log');
 					should(fs.existsSync(logPath)).be.true;
 					readFile(logPath, function (err, data) {
 						should(err).equal(null);
@@ -223,7 +223,7 @@ describe('logger', function () {
 				});
 				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
 					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adiAnalytics.log');
+					var logPath = path.join(tmpdir, 'adi-analytics.log');
 					should(fs.existsSync(logPath)).be.true;
 					readFile(logPath, function (err, data) {
 						should(err).equal(null);
@@ -278,27 +278,27 @@ describe('logger', function () {
 				});
 				request.get('http://127.0.0.1:' + port + '/hundred', function (err, res, body) {
 					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adiAnalytics.log');
+					var logPath = path.join(tmpdir, 'adi-analytics.log');
 					should(fs.existsSync(logPath)).be.true;
 				});
 				request.get('http://127.0.0.1:' + port + '/twoHundred', function (err, res, body) {
 					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adiAnalytics.log');
+					var logPath = path.join(tmpdir, 'adi-analytics.log');
 					should(fs.existsSync(logPath)).be.true;
 				});
 				request.get('http://127.0.0.1:' + port + '/threeHundred', function (err, res, body) {
 					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adiAnalytics.log');
+					var logPath = path.join(tmpdir, 'adi-analytics.log');
 					should(fs.existsSync(logPath)).be.true;
 				});
 				request.get('http://127.0.0.1:' + port + '/fourHundred', function (err, res, body) {
 					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adiAnalytics.log');
+					var logPath = path.join(tmpdir, 'adi-analytics.log');
 					should(fs.existsSync(logPath)).be.true;
 				});
 				request.get('http://127.0.0.1:' + port + '/fiveHundred', function (err, res, body) {
 					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adiAnalytics.log');
+					var logPath = path.join(tmpdir, 'adi-analytics.log');
 					should(fs.existsSync(logPath)).be.true;
 					readFile(logPath, function (err, data) {
 						should(err).equal(null);
@@ -345,7 +345,7 @@ describe('logger', function () {
 				});
 				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
 					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adiAnalytics.log');
+					var logPath = path.join(tmpdir, 'adi-analytics.log');
 					should(fs.existsSync(logPath)).be.true;
 					var obj = body && JSON.parse(body);
 					readFile(logPath, function (err, data) {
@@ -384,7 +384,7 @@ describe('logger', function () {
 				});
 				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
 					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adiAnalytics.log');
+					var logPath = path.join(tmpdir, 'adi-analytics.log');
 					should(fs.existsSync(logPath)).be.true;
 					var obj = body && JSON.parse(body);
 					readFile(logPath, function (err, data) {
