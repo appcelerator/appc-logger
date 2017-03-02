@@ -239,6 +239,45 @@ describe('logger', function () {
 		});
 	});
 
+	it('RDPP-645: correlationId is derived from requestId', function (callback) {
+		var app = express();
+		_util.findRandomPort(function (err, port) {
+			should(err).be.not.ok;
+			should(port).be.a.number;
+			var server = app.listen(port, function (err) {
+				should(err).be.not.ok;
+				var loggerConfig = {
+					logs: tmpdir,
+					logSingleRequest: true,
+					adiLogging: true,
+					name: 'arrowTest'
+				};
+				var logger = index.createExpressLogger(app, loggerConfig);
+				app.use(function (req, resp, next) {
+					resp.set('request-id', req.requestId);
+					next();
+				});
+				app.get('/echo', function (req, resp, next) {
+					resp.send({hello:'world'});
+					next();
+				});
+				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
+					should(err).not.be.ok;
+					var logPath = path.join(tmpdir, 'adi-analytics.log');
+					should(fs.existsSync(logPath)).be.true;
+					var obj = body && JSON.parse(body);
+					readFile(logPath, function (err, data) {
+						should(err).equal(null);
+						var logContent = JSON.parse(data);
+						should(logContent.length).not.equal(0);
+						should(logContent.correlationId).equal(res.headers['request-id']);
+					});
+					callback();
+				});
+
+			});
+		});
+	});
 	it('RDPP-644: status is "success" 1xx, 2xx, 3xx status codes', function (callback) {
 		var app = express();
 		_util.findRandomPort(function (err, port) {
@@ -314,46 +353,6 @@ describe('logger', function () {
 						should(threeHundred.status).equal('success');
 						should(fourHundred.status).equal('failure');
 						should(fiveHundred.status).equal('failure');
-					});
-					callback();
-				});
-
-			});
-		});
-	});
-
-	it('RDPP-645: correlationId is derived from requestId', function (callback) {
-		var app = express();
-		_util.findRandomPort(function (err, port) {
-			should(err).be.not.ok;
-			should(port).be.a.number;
-			var server = app.listen(port, function (err) {
-				should(err).be.not.ok;
-				var loggerConfig = {
-					logs: tmpdir,
-					logSingleRequest: true,
-					adiLogging: true,
-					name: 'arrowTest'
-				};
-				var logger = index.createExpressLogger(app, loggerConfig);
-				app.use(function (req, resp, next) {
-					resp.set('request-id', req.requestId);
-					next();
-				});
-				app.get('/echo', function (req, resp, next) {
-					resp.send({hello:'world'});
-					next();
-				});
-				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
-					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adi-analytics.log');
-					should(fs.existsSync(logPath)).be.true;
-					var obj = body && JSON.parse(body);
-					readFile(logPath, function (err, data) {
-						should(err).equal(null);
-						var logContent = JSON.parse(data);
-						should(logContent.length).not.equal(0);
-						should(logContent.correlationId).equal(res.headers['request-id']);
 					});
 					callback();
 				});
