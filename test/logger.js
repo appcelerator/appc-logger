@@ -311,8 +311,8 @@ describe('logger', function () {
 						should(hundred.status).equal('success');
 						should(twoHundred.status).equal('success');
 						should(threeHundred.status).equal('success');
-						should(fourHundred.status).equal('error');
-						should(fiveHundred.status).equal('error');
+						should(fourHundred.status).equal('failure');
+						should(fiveHundred.status).equal('failure');
 					});
 					callback();
 				});
