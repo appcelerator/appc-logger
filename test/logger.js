@@ -13,7 +13,8 @@ var should = require('should'),
 function readFile (filePath, cb) {
 	fs.readFile(filePath, 'utf8', function (err,data) {
 		if (err) {
-			return cb(err);
+			cb(err);
+			return;
 		}
 		fs.unlinkSync(filePath);
 		cb(null, data);
@@ -321,7 +322,7 @@ describe('logger', function () {
 		});
 	});
 
-	it('RDPP-645: correlcationId is derived from requestId', function (callback) {
+	it('RDPP-645: correlationId is derived from requestId', function (callback) {
 		var app = express();
 		_util.findRandomPort(function (err, port) {
 			should(err).be.not.ok;
@@ -360,7 +361,7 @@ describe('logger', function () {
 			});
 		});
 	});
-	it('RDPP-646: correlcationId is null if no request-', function (callback) {
+	it('RDPP-646: correlationId is null if no request-', function (callback) {
 		var app = express();
 		_util.findRandomPort(function (err, port) {
 			should(err).be.not.ok;
