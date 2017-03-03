@@ -1,7 +1,7 @@
 // jscs:disable jsDoc
 // jshint -W079
 var bunyan = require('bunyan'),
-    should = require('should'),
+	should = require('should'),
 	index = require('../');
 
 describe('index', function () {
