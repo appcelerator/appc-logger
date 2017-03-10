@@ -162,6 +162,152 @@ describe('logger', function () {
 			});
 		});
 	});
+});
+
+describe('ADI logging', function () {
+
+	before(function (done) {
+		try {
+			fs.mkdirs(tmpdir, done);
+		}
+		catch (E) {
+		}
+	});
+
+	after(function (done) {
+		_console.stop();
+		fs.emptyDir(tmpdir, done);
+	});
+
+	it('Should log adi logs if singleRequest(transactionLogEnabled) is false', function (callback) {
+		var app = express();
+		_util.findRandomPort(function (err, port) {
+			should(err).be.not.ok;
+			should(port).be.a.number;
+			var server = app.listen(port, function (err) {
+				should(err).be.not.ok;
+				var loggerConfig = {
+					logs: tmpdir,
+					logSingleRequest: false,
+					adiLogging: true,
+					name: 'arrowTest'
+				};
+				var logger = index.createExpressLogger(app, loggerConfig);
+				app.use(function (req, resp, next) {
+					resp.set('request-id', req.requestId);
+					next();
+				});
+				app.get('/echo', function (req, resp, next) {
+					resp.send({hello:'world'});
+					next();
+				});
+				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
+					should(err).not.be.ok;
+					var logPath = path.join(tmpdir, 'adi-analytics.log');
+					should(fs.existsSync(logPath)).be.true;
+					readFile(logPath, function (err, data) {
+						should(err).equal(null);
+						var logContent = JSON.parse(data);
+						should(logContent.length).not.equal(0);
+						callback();
+					});
+				});
+			});
+		});
+	});
+
+	it('Should not log arrowPing', function (callback) {
+		var app = express();
+		_util.findRandomPort(function (err, port) {
+			should(err).be.not.ok;
+			should(port).be.a.number;
+			var server = app.listen(port, function (err) {
+				should(err).be.not.ok;
+				var loggerConfig = {
+					logs: tmpdir,
+					logSingleRequest: false,
+					adiLogging: true,
+					name: 'arrowTest'
+				};
+				var logger = index.createExpressLogger(app, loggerConfig);
+				app.use(function (req, resp, next) {
+					resp.set('request-id', req.requestId);
+					next();
+				});
+				app.get('/arrowPing.json', function (req, resp, next) {
+					resp.send({ping: 'pong'});
+					next();
+				});
+				request.get('http://127.0.0.1:' + port + '/arrowPing.json', function (err, res, body) {
+					should(err).not.be.ok;
+					var logPath = path.join(tmpdir, 'adi-analytics.log');
+					should(fs.existsSync(logPath)).be.true;
+					readFile(logPath, function (err, data) {
+						should(err).equal(null);
+						should(function () {
+							var logContent = JSON.parse(data);
+						}).throw('Unexpected end of JSON input');
+						callback();
+					});
+				});
+			});
+		});
+	});
+
+	it('Should only log api calls to adi-analytics.log', function (callback) {
+		var app = express();
+		_util.findRandomPort(function (err, port) {
+			should(err).be.not.ok;
+			should(port).be.a.number;
+			var server = app.listen(port, function (err) {
+				should(err).be.not.ok;
+				var loggerConfig = {
+					logs: tmpdir,
+					logSingleRequest: false,
+					adiLogging: true,
+					name: 'arrowTest'
+				};
+				var logger = index.createExpressLogger(app, loggerConfig);
+				app.use(function (req, resp, next) {
+					resp.set('request-id', req.requestId);
+					next();
+				});
+				app.get('/echo', function (req, resp, next) {
+					resp.send({hello:'world'});
+					next();
+				});
+				app.get('/api/foo', function (req, resp, next) {
+					resp.send({ping: 'pong'});
+					next();
+				});
+				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
+					should(err).not.be.ok;
+					var logPath = path.join(tmpdir, 'adi-analytics.log');
+					should(fs.existsSync(logPath)).be.true;
+					readFile(logPath, function (err, data) {
+						should(err).equal(null);
+						should(function () {
+							var logContent = JSON.parse(data);
+						}).throw('Unexpected end of JSON input');
+					});
+				});
+				request.get('http://127.0.0.1:' + port + '/api/foo', function (err, res, body) {
+					should(err).not.be.ok;
+					var logPath = path.join(tmpdir, 'adi-analytics.log');
+					should(fs.existsSync(logPath)).be.true;
+					readFile(logPath, function (err, data) {
+						should(err).equal(null);
+						var logContent;
+						should(function () {
+							logContent = JSON.parse(data);
+						}).doesNotThrow('Unexpected end of JSON input');
+						should(logContent.length).not.equal(0);
+						callback();
+					});
+				});
+			});
+		});
+	});
 
 	it('RDPP-638: adiLogger.info logs if enabled in arrow config ', function (callback) {
 		var app = express();
@@ -278,6 +424,7 @@ describe('logger', function () {
 			});
 		});
 	});
+
 	it('RDPP-644: status is "success" 1xx, 2xx, 3xx status codes', function (callback) {
 		var app = express();
 		_util.findRandomPort(function (err, port) {
@@ -360,6 +507,7 @@ describe('logger', function () {
 			});
 		});
 	});
+
 	it('RDPP-646: correlationId is null if no request-', function (callback) {
 		var app = express();
 		_util.findRandomPort(function (err, port) {
