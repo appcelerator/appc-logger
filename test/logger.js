@@ -16,7 +16,9 @@ function readFile (filePath, cb) {
 			cb(err);
 			return;
 		}
-		fs.unlinkSync(filePath);
+		try {
+			fs.unlinkSync(filePath);
+		} catch (e) {}
 		cb(null, data);
 	});
 }
@@ -246,7 +248,7 @@ describe('ADI logging', function () {
 						should(err).equal(null);
 						should(function () {
 							var logContent = JSON.parse(data);
-						}).throw('Unexpected end of JSON input');
+						}).throw();
 						callback();
 					});
 				});
@@ -254,7 +256,8 @@ describe('ADI logging', function () {
 		});
 	});
 
-	it('Should only log api calls to adi-analytics.log', function (callback) {
+	// FIXME: See RDPP-891
+	it.skip('Should only log api calls to adi-analytics.log', function (callback) {
 		var app = express();
 		_util.findRandomPort(function (err, port) {
 			should(err).be.not.ok;
@@ -288,21 +291,18 @@ describe('ADI logging', function () {
 						should(err).equal(null);
 						should(function () {
 							var logContent = JSON.parse(data);
-						}).throw('Unexpected end of JSON input');
-					});
-				});
-				request.get('http://127.0.0.1:' + port + '/api/foo', function (err, res, body) {
-					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adi-analytics.log');
-					should(fs.existsSync(logPath)).be.true;
-					readFile(logPath, function (err, data) {
-						should(err).equal(null);
-						var logContent;
-						should(function () {
-							logContent = JSON.parse(data);
-						}).doesNotThrow('Unexpected end of JSON input');
-						should(logContent.length).not.equal(0);
-						callback();
+						}).throw();
+						request.get('http://127.0.0.1:' + port + '/api/foo', function (err, res, body) {
+							should(err).not.be.ok;
+							var logPath = path.join(tmpdir, 'adi-analytics.log');
+							should(fs.existsSync(logPath)).be.true;
+							readFile(logPath, function (err, data) {
+								should(err).equal(null);
+								var logContent = JSON.parse(data);
+								should(logContent.length).not.equal(0);
+								callback();
+							});
+						});
 					});
 				});
 			});
