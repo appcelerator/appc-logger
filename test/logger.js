@@ -443,69 +443,79 @@ describe('ADI logging', function () {
 		_util.findRandomPort(function (err, port) {
 			should(err).be.not.ok;
 			should(port).be.a.number;
+			var server = app.listen(port, function (err) {
+				should(err).be.not.ok;
+				var loggerConfig = {
+					logs: tmpdir,
+					logSingleRequest: true,
+					adiLogging: true,
+					name: 'arrowTest',
+					adiWhitelist: ['/echo', '/hundred', '/twoHundred', '/threeHundred', '/fourHundred', '/fiveHundred']
+				};
+				var logger = index.createExpressLogger(app, loggerConfig);
+				app.use(function (req, resp, next) {
+					resp.set('request-id', req.requestId);
+					next();
+				});
+				app.get('/hundred', function (req, resp, next) {
+					resp.status(100).send();
+					next();
+				});
+				app.get('/twoHundred', function (req, resp, next) {
+					resp.status(204).send();
+					next();
+				});
+				app.get('/threeHundred', function (req, resp, next) {
+					resp.status(301).send();
+					next();
+				});
+				app.get('/fourHundred', function (req, resp, next) {
+					resp.status(404).send();
+					next();
+				});
+				app.get('/fiveHundred', function (req, resp, next) {
+					resp.status(500).send();
+					next();
+				});
+			});
 			async.series([
-				function (cb) {
-					var server = app.listen(port, function (err) {
-						should(err).be.not.ok;
-						var loggerConfig = {
-							logs: tmpdir,
-							logSingleRequest: true,
-							adiLogging: true,
-							name: 'arrowTest',
-							adiWhitelist: ['/echo', '/hundred', '/twoHundred', '/threeHundred', '/fourHundred', '/fiveHundred']
-						};
-						var logger = index.createExpressLogger(app, loggerConfig);
-						app.use(function (req, resp, next) {
-							resp.set('request-id', req.requestId);
-							next();
-						});
-						app.get('/hundred', function (req, resp, next) {
-							resp.status(100).send();
-							next();
-						});
-						app.get('/twoHundred', function (req, resp, next) {
-							resp.status(204).send();
-							next();
-						});
-						app.get('/threeHundred', function (req, resp, next) {
-							resp.status(301).send();
-							next();
-						});
-						app.get('/fourHundred', function (req, resp, next) {
-							resp.status(404).send();
-							next();
-						});
-						app.get('/fiveHundred', function (req, resp, next) {
-							resp.status(500).send();
-							next();
-						});
-						cb();
-					});
-				},
 				function (cb) {
 					request.get('http://127.0.0.1:' + port + '/hundred', function (err, res, body) {
 						should(err).not.be.ok;
 						should(fs.existsSync(logPath)).be.true;
+						cb();
 					});
+				},
+				function (cb) {
 					request.get('http://127.0.0.1:' + port + '/twoHundred', function (err, res, body) {
 						should(err).not.be.ok;
 						should(fs.existsSync(logPath)).be.true;
+						cb();
 					});
+				},
+				function (cb) {
 					request.get('http://127.0.0.1:' + port + '/threeHundred', function (err, res, body) {
 						should(err).not.be.ok;
 						should(fs.existsSync(logPath)).be.true;
+						cb();
 					});
+				},
+				function (cb) {
 					request.get('http://127.0.0.1:' + port + '/fourHundred', function (err, res, body) {
 						should(err).not.be.ok;
 						should(fs.existsSync(logPath)).be.true;
+						cb();
 					});
+				},
+				function (cb) {
 					request.get('http://127.0.0.1:' + port + '/fiveHundred', function (err, res, body) {
 						should(err).not.be.ok;
 						should(fs.existsSync(logPath)).be.true;
 						cb();
 					});
 				}
-			], function (err, results) {
+			],
+			function (err, results) {
 				readFile(logPath, function (err, data) {
 					should(err).equal(null);
 					var logEntries = data.split('\n');
