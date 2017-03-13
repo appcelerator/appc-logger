@@ -504,25 +504,24 @@ describe('ADI logging', function () {
 						should(fs.existsSync(logPath)).be.true;
 						cb();
 					});
-				},
-				function () {
-					readFile(logPath, function (err, data) {
-						should(err).equal(null);
-						var logEntries = data.split('\n');
-						var hundred = JSON.parse(logEntries[0]);
-						var twoHundred = JSON.parse(logEntries[1]);
-						var threeHundred = JSON.parse(logEntries[2]);
-						var fourHundred = JSON.parse(logEntries[3]);
-						var fiveHundred = JSON.parse(logEntries[4]);
-						should(hundred.status).equal('success');
-						should(twoHundred.status).equal('success');
-						should(threeHundred.status).equal('success');
-						should(fourHundred.status).equal('failure');
-						should(fiveHundred.status).equal('failure');
-						callback();
-					});
 				}
-			]);
+			], function (err, results) {
+				readFile(logPath, function (err, data) {
+					should(err).equal(null);
+					var logEntries = data.split('\n');
+					var hundred = JSON.parse(logEntries[0]);
+					var twoHundred = JSON.parse(logEntries[1]);
+					var threeHundred = JSON.parse(logEntries[2]);
+					var fourHundred = JSON.parse(logEntries[3]);
+					var fiveHundred = JSON.parse(logEntries[4]);
+					should(hundred.status).equal('success');
+					should(twoHundred.status).equal('success');
+					should(threeHundred.status).equal('success');
+					should(fourHundred.status).equal('failure');
+					should(fiveHundred.status).equal('failure');
+					callback();
+				});
+			});
 		});
 	});
 
