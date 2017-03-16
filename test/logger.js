@@ -200,7 +200,7 @@ describe('ADI logging', function () {
 					logSingleRequest: false,
 					adiLogging: true,
 					name: 'arrowTest',
-					adiWhitelist: ['/echo']
+					adiPathFilter: ['/echo']
 				};
 				var logger = index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
@@ -238,7 +238,7 @@ describe('ADI logging', function () {
 					logSingleRequest: false,
 					adiLogging: true,
 					name: 'arrowTest',
-					adiWhitelist: ['/echo']
+					adiPathFilter: ['/echo']
 				};
 				var logger = index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
@@ -277,7 +277,7 @@ describe('ADI logging', function () {
 					logSingleRequest: false,
 					adiLogging: true,
 					name: 'arrowTest',
-					adiWhitelist: ['/api']
+					adiPathFilter: ['/api']
 				};
 				var logger = index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
@@ -330,7 +330,7 @@ describe('ADI logging', function () {
 					logSingleRequest: true,
 					adiLogging: true,
 					name: 'arrowTest',
-					adiWhitelist: ['/echo']
+					adiPathFilter: ['/echo']
 				};
 				var logger = index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
@@ -368,7 +368,7 @@ describe('ADI logging', function () {
 					logSingleRequest: true,
 					adiLogging: true,
 					name: 'arrowTest',
-					adiWhitelist: ['/echo']
+					adiPathFilter: ['/echo']
 				};
 				var logger = index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
@@ -408,7 +408,7 @@ describe('ADI logging', function () {
 					logSingleRequest: true,
 					adiLogging: true,
 					name: 'arrowTest',
-					adiWhitelist: ['/echo']
+					adiPathFilter: ['/echo']
 				};
 				var logger = index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
@@ -450,7 +450,7 @@ describe('ADI logging', function () {
 					logSingleRequest: true,
 					adiLogging: true,
 					name: 'arrowTest',
-					adiWhitelist: ['/echo', '/hundred', '/twoHundred', '/threeHundred', '/fourHundred', '/fiveHundred']
+					adiPathFilter: ['/echo', '/hundred', '/twoHundred', '/threeHundred', '/fourHundred', '/fiveHundred']
 				};
 				var logger = index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
@@ -547,7 +547,7 @@ describe('ADI logging', function () {
 					logSingleRequest: true,
 					adiLogging: true,
 					name: 'arrowTest',
-					adiWhitelist: ['/echo']
+					adiPathFilter: ['/echo']
 				};
 				var logger = index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
