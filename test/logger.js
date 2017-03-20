@@ -523,7 +523,7 @@ describe('ADI logging', function () {
 				};
 				var logger = index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
-					req._logname = '';
+					req.requestId = '';
 					next();
 				});
 				app.get('/echo', function (req, resp, next) {
