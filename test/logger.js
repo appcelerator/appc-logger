@@ -1,6 +1,7 @@
 // jscs:disable jsDoc
 // jshint -W079
-var should = require('should'),
+var async = require('async'),
+	should = require('should'),
 	index = require('../'),
 	_util = require('./_util'),
 	_console = new (require('./_console'))(),
@@ -10,15 +11,21 @@ var should = require('should'),
 	request = require('request'),
 	tmpdir = path.join(require('os').tmpdir(), 'test-logger-' + Date.now());
 
-function readFile (filePath, cb) {
+function readFile (filePath, deleteFile, cb) {
+	if (typeof deleteFile === 'function') {
+		cb = deleteFile;
+		deleteFile = true;
+	}
 	fs.readFile(filePath, 'utf8', function (err,data) {
 		if (err) {
 			cb(err);
 			return;
 		}
-		try {
-			fs.unlinkSync(filePath);
-		} catch (e) {}
+		if (deleteFile) {
+			try {
+				fs.unlinkSync(filePath);
+			} catch (e) {}
+		}
 		cb(null, data);
 	});
 }
@@ -181,7 +188,7 @@ describe('ADI logging', function () {
 		fs.emptyDir(tmpdir, done);
 	});
 
-	it('Should log adi logs if singleRequest(transactionLogEnabled) is false', function (callback) {
+	it('RDPP-910: Should log adi logs if singleRequest(transactionLogEnabled) is false', function (callback) {
 		var app = express();
 		_util.findRandomPort(function (err, port) {
 			should(err).be.not.ok;
@@ -192,7 +199,8 @@ describe('ADI logging', function () {
 					logs: tmpdir,
 					logSingleRequest: false,
 					adiLogging: true,
-					name: 'arrowTest'
+					name: 'arrowTest',
+					adiPathFilter: ['/echo']
 				};
 				var logger = index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
@@ -218,7 +226,7 @@ describe('ADI logging', function () {
 		});
 	});
 
-	it('Should not log arrowPing', function (callback) {
+	it('RDPP-912: Should not log the arrowPing.json healthcheck endpoint', function (callback) {
 		var app = express();
 		_util.findRandomPort(function (err, port) {
 			should(err).be.not.ok;
@@ -229,7 +237,8 @@ describe('ADI logging', function () {
 					logs: tmpdir,
 					logSingleRequest: false,
 					adiLogging: true,
-					name: 'arrowTest'
+					name: 'arrowTest',
+					adiPathFilter: ['/echo']
 				};
 				var logger = index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
@@ -256,8 +265,7 @@ describe('ADI logging', function () {
 		});
 	});
 
-	// FIXME: See RDPP-891
-	it.skip('Should only log api calls to adi-analytics.log', function (callback) {
+	it('RDPP-911: Should only log items in the whitelist to adi-analytics.log', function (callback) {
 		var app = express();
 		_util.findRandomPort(function (err, port) {
 			should(err).be.not.ok;
@@ -268,7 +276,8 @@ describe('ADI logging', function () {
 					logs: tmpdir,
 					logSingleRequest: false,
 					adiLogging: true,
-					name: 'arrowTest'
+					name: 'arrowTest',
+					adiPathFilter: ['/api']
 				};
 				var logger = index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
@@ -283,11 +292,11 @@ describe('ADI logging', function () {
 					resp.send({ping: 'pong'});
 					next();
 				});
-				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
+				request.get('http://127.0.0.1:' + port + '/echo/foo', function (err, res, body) {
 					should(err).not.be.ok;
 					var logPath = path.join(tmpdir, 'adi-analytics.log');
 					should(fs.existsSync(logPath)).be.true;
-					readFile(logPath, function (err, data) {
+					readFile(logPath, false, function (err, data) {
 						should(err).equal(null);
 						should(function () {
 							var logContent = JSON.parse(data);
@@ -320,7 +329,8 @@ describe('ADI logging', function () {
 					logs: tmpdir,
 					logSingleRequest: true,
 					adiLogging: true,
-					name: 'arrowTest'
+					name: 'arrowTest',
+					adiPathFilter: ['/echo']
 				};
 				var logger = index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
@@ -339,8 +349,8 @@ describe('ADI logging', function () {
 						should(err).equal(null);
 						var logContent = JSON.parse(data);
 						should(logContent.length).not.equal(0);
+						callback();
 					});
-					callback();
 				});
 			});
 		});
@@ -357,7 +367,8 @@ describe('ADI logging', function () {
 					logs: tmpdir,
 					logSingleRequest: true,
 					adiLogging: true,
-					name: 'arrowTest'
+					name: 'arrowTest',
+					adiPathFilter: ['/echo']
 				};
 				var logger = index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
@@ -377,8 +388,8 @@ describe('ADI logging', function () {
 						var logContent = JSON.parse(data);
 						should(logContent.length).not.equal(0);
 						should(logContent.protocolSrc).equal(port.toString());
+						callback();
 					});
-					callback();
 				});
 
 			});
@@ -396,7 +407,8 @@ describe('ADI logging', function () {
 					logs: tmpdir,
 					logSingleRequest: true,
 					adiLogging: true,
-					name: 'arrowTest'
+					name: 'arrowTest',
+					adiPathFilter: ['/echo']
 				};
 				var logger = index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
@@ -417,8 +429,8 @@ describe('ADI logging', function () {
 						var logContent = JSON.parse(data);
 						should(logContent.length).not.equal(0);
 						should(logContent.correlationId).equal(res.headers['request-id']);
+						callback();
 					});
-					callback();
 				});
 
 			});
@@ -427,6 +439,7 @@ describe('ADI logging', function () {
 
 	it('RDPP-644: status is "success" 1xx, 2xx, 3xx status codes', function (callback) {
 		var app = express();
+		var logPath = path.join(tmpdir, 'adi-analytics.log');
 		_util.findRandomPort(function (err, port) {
 			should(err).be.not.ok;
 			should(port).be.a.number;
@@ -436,7 +449,8 @@ describe('ADI logging', function () {
 					logs: tmpdir,
 					logSingleRequest: true,
 					adiLogging: true,
-					name: 'arrowTest'
+					name: 'arrowTest',
+					adiPathFilter: ['/echo', '/hundred', '/twoHundred', '/threeHundred', '/fourHundred', '/fiveHundred']
 				};
 				var logger = index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
@@ -463,47 +477,60 @@ describe('ADI logging', function () {
 					resp.status(500).send();
 					next();
 				});
-				request.get('http://127.0.0.1:' + port + '/hundred', function (err, res, body) {
-					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adi-analytics.log');
-					should(fs.existsSync(logPath)).be.true;
-				});
-				request.get('http://127.0.0.1:' + port + '/twoHundred', function (err, res, body) {
-					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adi-analytics.log');
-					should(fs.existsSync(logPath)).be.true;
-				});
-				request.get('http://127.0.0.1:' + port + '/threeHundred', function (err, res, body) {
-					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adi-analytics.log');
-					should(fs.existsSync(logPath)).be.true;
-				});
-				request.get('http://127.0.0.1:' + port + '/fourHundred', function (err, res, body) {
-					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adi-analytics.log');
-					should(fs.existsSync(logPath)).be.true;
-				});
-				request.get('http://127.0.0.1:' + port + '/fiveHundred', function (err, res, body) {
-					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adi-analytics.log');
-					should(fs.existsSync(logPath)).be.true;
-					readFile(logPath, function (err, data) {
-						should(err).equal(null);
-						var logEntries = data.split('\n');
-						var hundred = JSON.parse(logEntries[0]);
-						var twoHundred = JSON.parse(logEntries[1]);
-						var threeHundred = JSON.parse(logEntries[2]);
-						var fourHundred = JSON.parse(logEntries[3]);
-						var fiveHundred = JSON.parse(logEntries[4]);
-						should(hundred.status).equal('success');
-						should(twoHundred.status).equal('success');
-						should(threeHundred.status).equal('success');
-						should(fourHundred.status).equal('failure');
-						should(fiveHundred.status).equal('failure');
+			});
+			async.series([
+				function (cb) {
+					request.get('http://127.0.0.1:' + port + '/hundred', function (err, res, body) {
+						should(err).not.be.ok;
+						should(fs.existsSync(logPath)).be.true;
+						cb();
 					});
+				},
+				function (cb) {
+					request.get('http://127.0.0.1:' + port + '/twoHundred', function (err, res, body) {
+						should(err).not.be.ok;
+						should(fs.existsSync(logPath)).be.true;
+						cb();
+					});
+				},
+				function (cb) {
+					request.get('http://127.0.0.1:' + port + '/threeHundred', function (err, res, body) {
+						should(err).not.be.ok;
+						should(fs.existsSync(logPath)).be.true;
+						cb();
+					});
+				},
+				function (cb) {
+					request.get('http://127.0.0.1:' + port + '/fourHundred', function (err, res, body) {
+						should(err).not.be.ok;
+						should(fs.existsSync(logPath)).be.true;
+						cb();
+					});
+				},
+				function (cb) {
+					request.get('http://127.0.0.1:' + port + '/fiveHundred', function (err, res, body) {
+						should(err).not.be.ok;
+						should(fs.existsSync(logPath)).be.true;
+						cb();
+					});
+				}
+			],
+			function (err, results) {
+				readFile(logPath, function (err, data) {
+					should(err).equal(null);
+					var logEntries = data.split('\n');
+					var hundred = JSON.parse(logEntries[0]);
+					var twoHundred = JSON.parse(logEntries[1]);
+					var threeHundred = JSON.parse(logEntries[2]);
+					var fourHundred = JSON.parse(logEntries[3]);
+					var fiveHundred = JSON.parse(logEntries[4]);
+					should(hundred.status).equal('success');
+					should(twoHundred.status).equal('success');
+					should(threeHundred.status).equal('success');
+					should(fourHundred.status).equal('failure');
+					should(fiveHundred.status).equal('failure');
 					callback();
 				});
-
 			});
 		});
 	});
@@ -519,7 +546,8 @@ describe('ADI logging', function () {
 					logs: tmpdir,
 					logSingleRequest: true,
 					adiLogging: true,
-					name: 'arrowTest'
+					name: 'arrowTest',
+					adiPathFilter: ['/echo']
 				};
 				var logger = index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
@@ -540,10 +568,9 @@ describe('ADI logging', function () {
 						var logContent = JSON.parse(data);
 						should(logContent.length).not.equal(0);
 						should(logContent.correlationId).equal(null);
+						callback();
 					});
-					callback();
 				});
-
 			});
 		});
 	});
