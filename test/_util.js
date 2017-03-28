@@ -3,23 +3,27 @@ var fs = require('fs-extra'),
 		path = require('path'),
 		tmpdir = path.join(os.tmpdir(), 'appc-logger');
 
+/**
+ * create a temporary directory for use and return the path in the cb
+ */
 function getTempDir(cb) {
 	var dir = path.join(tmpdir, 'test-logger-' + Date.now());
-	fs.ensureDir(dir, function(err) {
+	fs.ensureDir(dir, function (err) {
 		if (err) {
 			console.error(err);
 		}
 		return cb(err, dir);
-	})
+	});
 }
 
+/**
+ * cleanup the created temporary directories
+ */
 function cleanupTempDirs(cb) {
-	console.log('clean up', tmpdir);
-	setTimeout(function() {
+	setTimeout(function () {
 		fs.remove(tmpdir, cb);
 	}, 9000);
 }
-
 
 /**
  * create a random port that is safe for listening

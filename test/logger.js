@@ -33,7 +33,7 @@ function readFile (filePath, deleteFile, cb) {
 describe('logger', function () {
 
 	beforeEach(function (done) {
-		_util.getTempDir(function(err, dir) {
+		_util.getTempDir(function (err, dir) {
 			tmpdir = dir;
 			done();
 		});
@@ -118,7 +118,7 @@ describe('logger', function () {
 
 				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
 					// 1 sec timeout gives it time to write the logs.
-					setTimeout(function() {
+					setTimeout(function () {
 						should(err).not.be.ok;
 						var obj = body && JSON.parse(body);
 						should(obj).be.an.object;
@@ -151,7 +151,6 @@ describe('logger', function () {
 						should(fs.existsSync(fn + '.metadata')).be.true;
 
 						var metadata = fs.readFileSync(fn + '.metadata').toString();
-						console.log(2, metadata);
 						contents = JSON.parse(metadata);
 						should(contents).be.an.object;
 						should(contents).have.property('logname', logfn);
@@ -174,7 +173,7 @@ describe('logger', function () {
 						should(contents).have.property('logname', logfn);
 						callback();
 					}, 1000);
-				})
+				});
 			});
 		});
 	});
@@ -183,7 +182,7 @@ describe('logger', function () {
 describe('ADI logging', function () {
 
 	beforeEach(function (done) {
-		_util.getTempDir(function(err, dir) {
+		_util.getTempDir(function (err, dir) {
 			tmpdir = dir;
 			done();
 		});
