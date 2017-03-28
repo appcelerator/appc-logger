@@ -1,3 +1,25 @@
+var fs = require('fs-extra'),
+		os = require('os'),
+		path = require('path'),
+		tmpdir = path.join(os.tmpdir(), 'appc-logger');
+
+function getTempDir(cb) {
+	var dir = path.join(tmpdir, 'test-logger-' + Date.now());
+	fs.ensureDir(dir, function(err) {
+		if (err) {
+			console.error(err);
+		}
+		return cb(err, dir);
+	})
+}
+
+function cleanupTempDirs(cb) {
+	console.log('clean up', tmpdir);
+	setTimeout(function() {
+		fs.remove(tmpdir, cb);
+	}, 9000);
+}
+
 
 /**
  * create a random port that is safe for listening
@@ -15,3 +37,5 @@ function findRandomPort(callback) {
 }
 
 exports.findRandomPort = findRandomPort;
+exports.getTempDir = getTempDir;
+exports.cleanupTempDirs = cleanupTempDirs;
