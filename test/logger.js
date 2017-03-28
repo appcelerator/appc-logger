@@ -9,7 +9,7 @@ var async = require('async'),
 	fs = require('fs-extra'),
 	express = require('express'),
 	request = require('request'),
-	tmpdir = path.join(require('os').tmpdir(), 'test-logger-' + Date.now());
+	tmpdir;
 
 function readFile (filePath, deleteFile, cb) {
 	if (typeof deleteFile === 'function') {
@@ -32,17 +32,17 @@ function readFile (filePath, deleteFile, cb) {
 
 describe('logger', function () {
 
-	before(function (done) {
-		try {
-			fs.mkdirs(tmpdir, done);
-		}
-		catch (E) {
-		}
+	beforeEach(function (done) {
+		_util.getTempDir(function(err, dir) {
+			tmpdir = dir;
+			done();
+		});
 	});
 
 	after(function (done) {
+		this.timeout(10000);
 		_console.stop();
-		fs.emptyDir(tmpdir, done);
+		_util.cleanupTempDirs(done);
 	});
 
 	it('should be able to load', function () {
@@ -73,7 +73,9 @@ describe('logger', function () {
 			should(fs.existsSync(logfile)).be.ok;
 			var contents = fs.readFileSync(logfile).toString();
 			should(/\"msg\"\:\"trace\"/.test(contents)).be.ok;
-			fs.unlinkSync(logfile);
+			logger.streams.forEach(function (f) {
+				f.stream.end();
+			});
 			done();
 		}, 100);
 	});
@@ -115,59 +117,64 @@ describe('logger', function () {
 				});
 
 				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
-					should(err).not.be.ok;
-					var obj = body && JSON.parse(body);
-					should(obj).be.an.object;
-					should(obj).eql({hello:'world'});
-					should(res.headers).be.an.object;
-					should(res.headers['request-id']).be.a.string;
-					var reqid = res.headers['request-id'];
-					var files = fs.readdirSync(tmpdir);
-					should(files).be.an.array;
-					should(files).have.length(3);
-					var fn = path.join(tmpdir, files.filter(function (fn) {
-						return fn !== 'requests.log' && !/metadata$/.test(fn);
-					})[0]);
-					var logfn = fn;
+					// 1 sec timeout gives it time to write the logs.
+					setTimeout(function() {
+						should(err).not.be.ok;
+						var obj = body && JSON.parse(body);
+						should(obj).be.an.object;
+						should(obj).eql({hello:'world'});
+						should(res.headers).be.an.object;
+						should(res.headers['request-id']).be.a.string;
+						var reqid = res.headers['request-id'];
+						var files = fs.readdirSync(tmpdir);
+						should(files).be.an.array;
+						should(files).have.length(3);
+						var fn = path.join(tmpdir, files.filter(function (fn) {
+							return fn !== 'requests.log' && !/metadata$/.test(fn);
+						})[0]);
+						var logfn = fn;
 
-					// validate that the request has the right info
-					var contents = JSON.parse(fs.readFileSync(fn).toString());
-					should(contents).be.an.object;
-					should(contents).have.property('name', files[0].replace(/\.log$/, ''));
-					should(contents).have.property('req_id', reqid);
-					should(contents).have.property('req');
-					should(contents).have.property('res');
-					should(contents).have.property('start', true);
-					should(contents).have.property('ignore', true);
-					should(contents).have.property('msg', 'start');
-					should(contents).have.property('level', 30);
+						// validate that the request has the right info
+						var fileContents = fs.readFileSync(fn).toString();
+						console.log(1, fileContents);
+						var contents = JSON.parse(fileContents);
+						should(contents).be.an.object;
+						should(contents).have.property('name', files[0].replace(/\.log$/, ''));
+						should(contents).have.property('req_id', reqid);
+						should(contents).have.property('req');
+						should(contents).have.property('res');
+						should(contents).have.property('start', true);
+						should(contents).have.property('ignore', true);
+						should(contents).have.property('msg', 'start');
+						should(contents).have.property('level', 30);
 
-					should(fs.existsSync(fn + '.metadata')).be.true;
+						should(fs.existsSync(fn + '.metadata')).be.true;
 
-					var metadata = fs.readFileSync(fn + '.metadata').toString();
-					contents = JSON.parse(metadata);
-					should(contents).be.an.object;
-					should(contents).have.property('logname', logfn);
-					should(contents).have.property('req_id', reqid);
-					should(contents).have.property('req_headers');
-					should(contents).have.property('response_time');
-					should(contents).have.property('name', path.basename(fn).replace('.log', ''));
+						var metadata = fs.readFileSync(fn + '.metadata').toString();
+						console.log(2, metadata);
+						contents = JSON.parse(metadata);
+						should(contents).be.an.object;
+						should(contents).have.property('logname', logfn);
+						should(contents).have.property('req_id', reqid);
+						should(contents).have.property('req_headers');
+						should(contents).have.property('response_time');
+						should(contents).have.property('name', path.basename(fn).replace('.log', ''));
 
-					// now validate that our request is logged that points to our
-					// request log
-					fn = path.join(tmpdir, 'requests.log');
-					contents = JSON.parse(fs.readFileSync(fn).toString());
-					should(contents).be.an.object;
-					should(contents).have.property('name', files[0].replace(/\.log$/, ''));
-					should(contents).have.property('req_id', reqid);
-					should(contents).have.property('req');
-					should(contents).have.property('res');
-					should(contents).have.property('msg', '');
-					should(contents).have.property('level', 30);
-					should(contents).have.property('logname', logfn);
-					callback();
-				});
-
+						// now validate that our request is logged that points to our
+						// request log
+						fn = path.join(tmpdir, 'requests.log');
+						contents = JSON.parse(fs.readFileSync(fn).toString());
+						should(contents).be.an.object;
+						should(contents).have.property('name', files[0].replace(/\.log$/, ''));
+						should(contents).have.property('req_id', reqid);
+						should(contents).have.property('req');
+						should(contents).have.property('res');
+						should(contents).have.property('msg', '');
+						should(contents).have.property('level', 30);
+						should(contents).have.property('logname', logfn);
+						callback();
+					}, 1000);
+				})
 			});
 		});
 	});
@@ -175,17 +182,18 @@ describe('logger', function () {
 
 describe('ADI logging', function () {
 
-	before(function (done) {
-		try {
-			fs.mkdirs(tmpdir, done);
-		}
-		catch (E) {
-		}
+	beforeEach(function (done) {
+		_util.getTempDir(function(err, dir) {
+			tmpdir = dir;
+			done();
+		});
 	});
 
 	after(function (done) {
+
+		this.timeout(10000);
 		_console.stop();
-		fs.emptyDir(tmpdir, done);
+		_util.cleanupTempDirs(done);
 	});
 
 	it('RDPP-910: Should log adi logs if singleRequest(transactionLogEnabled) is false', function (callback) {
