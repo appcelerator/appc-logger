@@ -1,48 +1,48 @@
 {
-	"name": "appc-logger",
-	"version": "1.1.27",
-	"description": "Appcelerator Logger",
-	"main": "index.js",
-	"dependencies": {
-		"async": "^2.1.4",
-		"bunyan": "^1.5.1",
-		"chalk": "^1.1.1",
-		"debug": "^2.2.0",
-		"fs-extra": "^2.0.0",
-		"lodash": "^3.10.1",
-		"readable-stream": "^2.0.3",
-		"response-time": "^2.3.1",
-		"uuid-v4": "^0.1.0"
-	},
-	"devDependencies": {
-		"express": "^4.13.3",
-		"grunt": "^1.0.1",
-		"grunt-appc-js": "^1.0.0",
-		"grunt-contrib-clean": "^1.0.0",
-		"grunt-contrib-jshint": "^1.1.0",
-		"grunt-mocha-istanbul": "^5.0.2",
-		"istanbul": "^0.4.1",
-		"mocha": "^3.2.0",
-		"request": "^2.66.0",
-		"should": "^11.2.0"
-	},
-	"scripts": {
-		"test": "grunt"
-	},
-	"bugs": {
-		"url": "https://jira.appcelerator.org/browse/API"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git@github.com:appcelerator/appc-logger.git"
-	},
-	"keywords": [
-		"appcelerator",
-		"logger",
-		"appc-client",
-		"appc-jira-cli"
-	],
-	"author": "Jeff Haynie",
-	"license": "Apache-2.0",
-	"homepage": "https://github.com/appcelerator/appc-logger"
+  "name": "appc-logger",
+  "version": "1.2.0",
+  "description": "Appcelerator Logger",
+  "main": "index.js",
+  "dependencies": {
+    "async": "^2.1.4",
+    "bunyan": "^1.5.1",
+    "chalk": "^1.1.1",
+    "debug": "^2.2.0",
+    "fs-extra": "^2.0.0",
+    "lodash": "^3.10.1",
+    "readable-stream": "^2.0.3",
+    "response-time": "^2.3.1",
+    "uuid-v4": "^0.1.0"
+  },
+  "devDependencies": {
+    "express": "^4.13.3",
+    "grunt": "^1.0.1",
+    "grunt-appc-js": "^1.0.0",
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-mocha-istanbul": "^5.0.2",
+    "istanbul": "^0.4.1",
+    "mocha": "^3.2.0",
+    "request": "^2.66.0",
+    "should": "^11.2.0"
+  },
+  "scripts": {
+    "test": "grunt"
+  },
+  "bugs": {
+    "url": "https://jira.appcelerator.org/browse/API"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:appcelerator/appc-logger.git"
+  },
+  "keywords": [
+    "appcelerator",
+    "logger",
+    "appc-client",
+    "appc-jira-cli"
+  ],
+  "author": "Jeff Haynie",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/appcelerator/appc-logger"
 }
