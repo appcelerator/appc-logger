@@ -177,6 +177,30 @@ describe('logger', function () {
 			});
 		});
 	});
+
+	it('RDPP-1064: Should not error when options is undefined', function (callback) {
+		var app = express();
+		_util.findRandomPort(function (err, port) {
+			should(err).be.not.ok;
+			should(port).be.a.number;
+			var server = app.listen(port, function (err) {
+				should(err).be.not.ok;
+				var logger = index.createExpressLogger(app);
+				app.use(function (req, resp, next) {
+					req.requestId = '';
+					next();
+				});
+				app.get('/echo', function (req, resp, next) {
+					resp.send({hello:'world'});
+					next();
+				});
+				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
+					should(err).not.be.ok;
+					callback();
+				});
+			});
+		});
+	});
 });
 
 describe('ADI logging', function () {
@@ -577,30 +601,6 @@ describe('ADI logging', function () {
 						should(logContent.correlationId).equal(null);
 						callback();
 					});
-				});
-			});
-		});
-	});
-
-	it.only('Not crash when no options', function (callback) {
-		var app = express();
-		_util.findRandomPort(function (err, port) {
-			should(err).be.not.ok;
-			should(port).be.a.number;
-			var server = app.listen(port, function (err) {
-				should(err).be.not.ok;
-				var logger = index.createExpressLogger(app);
-				app.use(function (req, resp, next) {
-					req.requestId = '';
-					next();
-				});
-				app.get('/echo', function (req, resp, next) {
-					resp.send({hello:'world'});
-					next();
-				});
-				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
-					should(err).not.be.ok;
-					callback();
 				});
 			});
 		});
