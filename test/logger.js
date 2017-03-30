@@ -178,6 +178,35 @@ describe('logger', function () {
 		});
 	});
 
+	it('RDPP-1063: Should not log arrowPing with logSingleRequest: true', function (callback) {
+		var app = express();
+		_util.findRandomPort(function (err, port) {
+			should(err).be.not.ok;
+			should(port).be.a.number;
+			var server = app.listen(port, function (err) {
+				should(err).be.not.ok;
+				var loggerConfig = {
+					logs: tmpdir,
+					logSingleRequest: true
+				};
+				var logger = index.createExpressLogger(app, loggerConfig);
+				app.use(function (req, resp, next) {
+					req.requestId = '';
+					next();
+				});
+				app.get('/arrowPing.json', function (req, resp, next) {
+					resp.send({hello:'world'});
+					next();
+				});
+				request.get('http://127.0.0.1:' + port + '/arrowPing.json', function (err, res, body) {
+					var files = fs.readdirSync(tmpdir);
+					should(files.length).equal(1); // Log dir should only contain requests.log
+					callback();
+				});
+			});
+		});
+	});
+
 	it('RDPP-1064: Should not error when options is undefined', function (callback) {
 		var app = express();
 		_util.findRandomPort(function (err, port) {
