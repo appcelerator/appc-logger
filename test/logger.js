@@ -201,6 +201,7 @@ describe('logger', function () {
 				request.get('http://127.0.0.1:' + port + '/arrowPing.json', function (err, res, body) {
 					var files = fs.readdirSync(tmpdir);
 					should(files.length).equal(1); // Log dir should only contain requests.log
+					should(files[0]).equal('requests.log');
 					callback();
 				});
 			});
