@@ -15,7 +15,9 @@ module.exports = function(grunt) {
 						branches: 80,
 						functions: 80,
 						lines: 80
-					}
+					},
+					reporter: 'mocha-jenkins-reporter',
+					reportFormats: ['lcov', 'cobertura']
 				}
 			}
 		},
