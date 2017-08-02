@@ -5,3 +5,4 @@ logs
 backup
 test.js
 .idea
+junit_report.xml
