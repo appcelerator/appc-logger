@@ -1,7 +1,4 @@
-var exec = require('child_process').exec,
-	BIN = './node_modules/.bin/';
-
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
 	// Project configuration.
 	grunt.initConfig({
@@ -17,7 +14,7 @@ module.exports = function(grunt) {
 						lines: 80
 					},
 					reporter: 'mocha-jenkins-reporter',
-					reportFormats: ['lcov', 'cobertura']
+					reportFormats: [ 'lcov', 'cobertura' ]
 				}
 			}
 		},
@@ -25,11 +22,11 @@ module.exports = function(grunt) {
 			options: {
 				force: false
 			},
-			src: ['lib/**/*.js', 'test/**/*.js']
+			src: [ 'Gruntfile.js', 'index.js', 'lib/**/*.js', 'test/**/*.js' ]
 		},
 		clean: {
-			pre: ['*.log'],
-			post: ['tmp']
+			pre: [ '*.log' ],
+			post: [ 'tmp' ]
 		}
 	});
 
@@ -39,10 +36,10 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-clean');
 
 	// set required env vars
-	grunt.registerTask('env', function() {
+	grunt.registerTask('env', function () {
 		process.env.TEST = '1';
 	});
 
 	// register tasks
-	grunt.registerTask('default', ['clean:pre', 'env', 'appcJs', 'mocha_istanbul:coverage', 'clean:post']);
+	grunt.registerTask('default', [ 'clean:pre', 'env', 'appcJs', 'mocha_istanbul:coverage', 'clean:post' ]);
 };

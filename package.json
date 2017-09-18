@@ -17,9 +17,8 @@
   "devDependencies": {
     "express": "^4.13.3",
     "grunt": "^1.0.1",
-    "grunt-appc-js": "^1.0.0",
+    "grunt-appc-js": "^2.0.0",
     "grunt-contrib-clean": "^1.0.0",
-    "grunt-contrib-jshint": "^1.1.0",
     "grunt-mocha-istanbul": "^5.0.2",
     "istanbul": "^0.4.1",
     "mocha": "^3.2.0",
@@ -45,5 +44,8 @@
   ],
   "author": "Jeff Haynie",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/appcelerator/appc-logger"
+  "homepage": "https://github.com/appcelerator/appc-logger",
+  "engines": {
+    "node": ">=4.0"
+  }
 }
