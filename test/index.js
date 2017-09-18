@@ -1,6 +1,8 @@
 // jscs:disable jsDoc
 // jshint -W079
-var bunyan = require('bunyan'),
+/* eslint no-unused-expressions: "off" */
+'use strict';
+const bunyan = require('bunyan'),
 	should = require('should'),
 	index = require('../');
 
