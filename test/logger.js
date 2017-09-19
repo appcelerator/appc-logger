@@ -1,6 +1,8 @@
 // jscs:disable jsDoc
 // jshint -W079
-var async = require('async'),
+/* eslint no-unused-expressions: "off" */
+'use strict';
+const async = require('async'),
 	should = require('should'),
 	index = require('../'),
 	_util = require('./_util'),
@@ -8,15 +10,15 @@ var async = require('async'),
 	path = require('path'),
 	fs = require('fs-extra'),
 	express = require('express'),
-	request = require('request'),
-	tmpdir;
+	request = require('request');
+let tmpdir;
 
 function readFile (filePath, deleteFile, cb) {
 	if (typeof deleteFile === 'function') {
 		cb = deleteFile;
 		deleteFile = true;
 	}
-	fs.readFile(filePath, 'utf8', function (err,data) {
+	fs.readFile(filePath, 'utf8', function (err, data) {
 		if (err) {
 			cb(err);
 			return;
@@ -24,7 +26,7 @@ function readFile (filePath, deleteFile, cb) {
 		if (deleteFile) {
 			try {
 				fs.unlinkSync(filePath);
-			} catch (e) {}
+			} catch (e) {} // eslint-disable-line no-empty
 		}
 		cb(null, data);
 	});
@@ -71,8 +73,8 @@ describe('logger', function () {
 		// need to give logging time to flush output
 		setTimeout(function () {
 			should(fs.existsSync(logfile)).be.ok;
-			var contents = fs.readFileSync(logfile).toString();
-			should(/\"msg\"\:\"trace\"/.test(contents)).be.ok;
+			const contents = fs.readFileSync(logfile).toString();
+			should(/"msg":"trace"/.test(contents)).be.ok;
 			logger.streams.forEach(function (f) {
 				f.stream.end();
 			});
@@ -87,10 +89,10 @@ describe('logger', function () {
 		_util.findRandomPort(function (err, port) {
 			should(err).be.not.ok;
 			should(port).be.a.number;
-			var server = app.listen(port, function (err) {
+			app.listen(port, function (err) {
 				should(err).be.not.ok;
 
-				var logger = index.createExpressLogger(app, {logs:tmpdir, logSingleRequest:true});
+				const logger = index.createExpressLogger(app, { logs:tmpdir, logSingleRequest:true });
 				should(logger).be.an.object;
 				should(logger.info).be.a.function;
 
@@ -101,8 +103,7 @@ describe('logger', function () {
 				try {
 					logger.info('hello');
 					app.log.info('hello');
-				}
-				finally {
+				} finally {
 					_console.stop();
 				}
 
@@ -112,7 +113,7 @@ describe('logger', function () {
 				});
 
 				app.get('/echo', function (req, resp, next) {
-					resp.send({hello:'world'});
+					resp.send({ hello:'world' });
 					next();
 				});
 
@@ -120,24 +121,24 @@ describe('logger', function () {
 					// 1 sec timeout gives it time to write the logs.
 					setTimeout(function () {
 						should(err).not.be.ok;
-						var obj = body && JSON.parse(body);
+						const obj = body && JSON.parse(body);
 						should(obj).be.an.object;
-						should(obj).eql({hello:'world'});
+						should(obj).eql({ hello:'world' });
 						should(res.headers).be.an.object;
 						should(res.headers['request-id']).be.a.string;
-						var reqid = res.headers['request-id'];
-						var files = fs.readdirSync(tmpdir);
+						const reqid = res.headers['request-id'];
+						const files = fs.readdirSync(tmpdir);
 						should(files).be.an.array;
 						should(files).have.length(3);
-						var fn = path.join(tmpdir, files.filter(function (fn) {
+						let fn = path.join(tmpdir, files.filter(function (fn) {
 							return fn !== 'requests.log' && !/metadata$/.test(fn);
 						})[0]);
-						var logfn = fn;
+						const logfn = fn;
 
 						// validate that the request has the right info
-						var fileContents = fs.readFileSync(fn).toString();
+						const fileContents = fs.readFileSync(fn).toString();
 						console.log(1, fileContents);
-						var contents = JSON.parse(fileContents);
+						let contents = JSON.parse(fileContents);
 						should(contents).be.an.object;
 						should(contents).have.property('name', files[0].replace(/\.log$/, ''));
 						should(contents).have.property('req_id', reqid);
@@ -150,7 +151,7 @@ describe('logger', function () {
 
 						should(fs.existsSync(fn + '.metadata')).be.true;
 
-						var metadata = fs.readFileSync(fn + '.metadata').toString();
+						const metadata = fs.readFileSync(fn + '.metadata').toString();
 						contents = JSON.parse(metadata);
 						should(contents).be.an.object;
 						should(contents).have.property('logname', logfn);
@@ -183,22 +184,22 @@ describe('logger', function () {
 		_util.findRandomPort(function (err, port) {
 			should(err).be.not.ok;
 			should(port).be.a.number;
-			var server = app.listen(port, function (err) {
+			app.listen(port, function (err) {
 				should(err).be.not.ok;
-				var loggerConfig = {
+				const loggerConfig = {
 					logs: tmpdir,
 					logSingleRequest: true
 				};
-				var logger = index.createExpressLogger(app, loggerConfig);
+				index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
 					req.requestId = '';
 					next();
 				});
 				app.get('/arrowPing.json', function (req, resp, next) {
-					resp.send({hello:'world'});
+					resp.send({ hello:'world' });
 					next();
 				});
-				request.get('http://127.0.0.1:' + port + '/arrowPing.json', function (err, res, body) {
+				request.get('http://127.0.0.1:' + port + '/arrowPing.json', function () {
 					var files = fs.readdirSync(tmpdir);
 					should(files.length).equal(1); // Log dir should only contain requests.log
 					should(files[0]).equal('requests.log');
@@ -213,18 +214,18 @@ describe('logger', function () {
 		_util.findRandomPort(function (err, port) {
 			should(err).be.not.ok;
 			should(port).be.a.number;
-			var server = app.listen(port, function (err) {
+			app.listen(port, function (err) {
 				should(err).be.not.ok;
-				var logger = index.createExpressLogger(app);
+				index.createExpressLogger(app);
 				app.use(function (req, resp, next) {
 					req.requestId = '';
 					next();
 				});
 				app.get('/echo', function (req, resp, next) {
-					resp.send({hello:'world'});
+					resp.send({ hello:'world' });
 					next();
 				});
-				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
+				request.get('http://127.0.0.1:' + port + '/echo', function (err) {
 					should(err).not.be.ok;
 					callback();
 				});
@@ -254,31 +255,31 @@ describe('ADI logging', function () {
 		_util.findRandomPort(function (err, port) {
 			should(err).be.not.ok;
 			should(port).be.a.number;
-			var server = app.listen(port, function (err) {
+			app.listen(port, function (err) {
 				should(err).be.not.ok;
-				var loggerConfig = {
+				const loggerConfig = {
 					logs: tmpdir,
 					logSingleRequest: false,
 					adiLogging: true,
 					name: 'arrowTest',
-					adiPathFilter: ['/echo']
+					adiPathFilter: [ '/echo' ]
 				};
-				var logger = index.createExpressLogger(app, loggerConfig);
+				index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
 					resp.set('request-id', req.requestId);
 					next();
 				});
 				app.get('/echo', function (req, resp, next) {
-					resp.send({hello:'world'});
+					resp.send({ hello:'world' });
 					next();
 				});
-				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
+				request.get('http://127.0.0.1:' + port + '/echo', function (err) {
 					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adi-analytics.log');
+					const logPath = path.join(tmpdir, 'adi-analytics.log');
 					should(fs.existsSync(logPath)).be.true;
 					readFile(logPath, function (err, data) {
 						should(err).equal(null);
-						var logContent = JSON.parse(data);
+						const logContent = JSON.parse(data);
 						should(logContent.length).not.equal(0);
 						callback();
 					});
@@ -292,32 +293,32 @@ describe('ADI logging', function () {
 		_util.findRandomPort(function (err, port) {
 			should(err).be.not.ok;
 			should(port).be.a.number;
-			var server = app.listen(port, function (err) {
+			app.listen(port, function (err) {
 				should(err).be.not.ok;
-				var loggerConfig = {
+				const loggerConfig = {
 					logs: tmpdir,
 					logSingleRequest: false,
 					adiLogging: true,
 					name: 'arrowTest',
-					adiPathFilter: ['/echo']
+					adiPathFilter: [ '/echo' ]
 				};
-				var logger = index.createExpressLogger(app, loggerConfig);
+				index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
 					resp.set('request-id', req.requestId);
 					next();
 				});
 				app.get('/arrowPing.json', function (req, resp, next) {
-					resp.send({ping: 'pong'});
+					resp.send({ ping: 'pong' });
 					next();
 				});
-				request.get('http://127.0.0.1:' + port + '/arrowPing.json', function (err, res, body) {
+				request.get('http://127.0.0.1:' + port + '/arrowPing.json', function (err) {
 					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adi-analytics.log');
+					const logPath = path.join(tmpdir, 'adi-analytics.log');
 					should(fs.existsSync(logPath)).be.true;
 					readFile(logPath, function (err, data) {
 						should(err).equal(null);
 						should(function () {
-							var logContent = JSON.parse(data);
+							JSON.parse(data);
 						}).throw();
 						callback();
 					});
@@ -331,44 +332,44 @@ describe('ADI logging', function () {
 		_util.findRandomPort(function (err, port) {
 			should(err).be.not.ok;
 			should(port).be.a.number;
-			var server = app.listen(port, function (err) {
+			app.listen(port, function (err) {
 				should(err).be.not.ok;
-				var loggerConfig = {
+				const loggerConfig = {
 					logs: tmpdir,
 					logSingleRequest: false,
 					adiLogging: true,
 					name: 'arrowTest',
-					adiPathFilter: ['/api']
+					adiPathFilter: [ '/api' ]
 				};
-				var logger = index.createExpressLogger(app, loggerConfig);
+				index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
 					resp.set('request-id', req.requestId);
 					next();
 				});
 				app.get('/echo', function (req, resp, next) {
-					resp.send({hello:'world'});
+					resp.send({ hello:'world' });
 					next();
 				});
 				app.get('/api/foo', function (req, resp, next) {
-					resp.send({ping: 'pong'});
+					resp.send({ ping: 'pong' });
 					next();
 				});
-				request.get('http://127.0.0.1:' + port + '/echo/foo', function (err, res, body) {
+				request.get('http://127.0.0.1:' + port + '/echo/foo', function (err) {
 					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adi-analytics.log');
+					const logPath = path.join(tmpdir, 'adi-analytics.log');
 					should(fs.existsSync(logPath)).be.true;
 					readFile(logPath, false, function (err, data) {
 						should(err).equal(null);
 						should(function () {
-							var logContent = JSON.parse(data);
+							JSON.parse(data);
 						}).throw();
-						request.get('http://127.0.0.1:' + port + '/api/foo', function (err, res, body) {
+						request.get('http://127.0.0.1:' + port + '/api/foo', function (err) {
 							should(err).not.be.ok;
-							var logPath = path.join(tmpdir, 'adi-analytics.log');
+							const logPath = path.join(tmpdir, 'adi-analytics.log');
 							should(fs.existsSync(logPath)).be.true;
 							readFile(logPath, function (err, data) {
 								should(err).equal(null);
-								var logContent = JSON.parse(data);
+								const logContent = JSON.parse(data);
 								should(logContent.length).not.equal(0);
 								callback();
 							});
@@ -384,31 +385,31 @@ describe('ADI logging', function () {
 		_util.findRandomPort(function (err, port) {
 			should(err).be.not.ok;
 			should(port).be.a.number;
-			var server = app.listen(port, function (err) {
+			app.listen(port, function (err) {
 				should(err).be.not.ok;
-				var loggerConfig = {
+				const loggerConfig = {
 					logs: tmpdir,
 					logSingleRequest: true,
 					adiLogging: true,
 					name: 'arrowTest',
-					adiPathFilter: ['/echo']
+					adiPathFilter: [ '/echo' ]
 				};
-				var logger = index.createExpressLogger(app, loggerConfig);
+				index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
 					resp.set('request-id', req.requestId);
 					next();
 				});
 				app.get('/echo', function (req, resp, next) {
-					resp.send({hello:'world'});
+					resp.send({ hello:'world' });
 					next();
 				});
-				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
+				request.get('http://127.0.0.1:' + port + '/echo', function (err) {
 					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adi-analytics.log');
+					const logPath = path.join(tmpdir, 'adi-analytics.log');
 					should(fs.existsSync(logPath)).be.true;
 					readFile(logPath, function (err, data) {
 						should(err).equal(null);
-						var logContent = JSON.parse(data);
+						const logContent = JSON.parse(data);
 						should(logContent.length).not.equal(0);
 						callback();
 					});
@@ -422,31 +423,31 @@ describe('ADI logging', function () {
 		_util.findRandomPort(function (err, port) {
 			should(err).be.not.ok;
 			should(port).be.a.number;
-			var server = app.listen(port, function (err) {
+			app.listen(port, function (err) {
 				should(err).be.not.ok;
-				var loggerConfig = {
+				const loggerConfig = {
 					logs: tmpdir,
 					logSingleRequest: true,
 					adiLogging: true,
 					name: 'arrowTest',
-					adiPathFilter: ['/echo']
+					adiPathFilter: [ '/echo' ]
 				};
-				var logger = index.createExpressLogger(app, loggerConfig);
+				index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
 					resp.set('request-id', req.requestId);
 					next();
 				});
 				app.get('/echo', function (req, resp, next) {
-					resp.send({hello:'world'});
+					resp.send({ hello:'world' });
 					next();
 				});
-				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
+				request.get('http://127.0.0.1:' + port + '/echo', function (err) {
 					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adi-analytics.log');
+					const logPath = path.join(tmpdir, 'adi-analytics.log');
 					should(fs.existsSync(logPath)).be.true;
 					readFile(logPath, function (err, data) {
 						should(err).equal(null);
-						var logContent = JSON.parse(data);
+						const logContent = JSON.parse(data);
 						should(logContent.length).not.equal(0);
 						should(logContent.protocolSrc).equal(port.toString());
 						callback();
@@ -462,32 +463,32 @@ describe('ADI logging', function () {
 		_util.findRandomPort(function (err, port) {
 			should(err).be.not.ok;
 			should(port).be.a.number;
-			var server = app.listen(port, function (err) {
+			app.listen(port, function (err) {
 				should(err).be.not.ok;
-				var loggerConfig = {
+				const loggerConfig = {
 					logs: tmpdir,
 					logSingleRequest: true,
 					adiLogging: true,
 					name: 'arrowTest',
-					adiPathFilter: ['/echo']
+					adiPathFilter: [ '/echo' ]
 				};
-				var logger = index.createExpressLogger(app, loggerConfig);
+				index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
 					resp.set('request-id', req.requestId);
 					next();
 				});
 				app.get('/echo', function (req, resp, next) {
-					resp.send({hello:'world'});
+					resp.send({ hello:'world' });
 					next();
 				});
 				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
 					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adi-analytics.log');
+					const logPath = path.join(tmpdir, 'adi-analytics.log');
 					should(fs.existsSync(logPath)).be.true;
-					var obj = body && JSON.parse(body);
+					body && JSON.parse(body);
 					readFile(logPath, function (err, data) {
 						should(err).equal(null);
-						var logContent = JSON.parse(data);
+						const logContent = JSON.parse(data);
 						should(logContent.length).not.equal(0);
 						should(logContent.correlationId).equal(res.headers['request-id']);
 						callback();
@@ -504,16 +505,16 @@ describe('ADI logging', function () {
 		_util.findRandomPort(function (err, port) {
 			should(err).be.not.ok;
 			should(port).be.a.number;
-			var server = app.listen(port, function (err) {
+			app.listen(port, function (err) {
 				should(err).be.not.ok;
-				var loggerConfig = {
+				const loggerConfig = {
 					logs: tmpdir,
 					logSingleRequest: true,
 					adiLogging: true,
 					name: 'arrowTest',
-					adiPathFilter: ['/echo', '/hundred', '/twoHundred', '/threeHundred', '/fourHundred', '/fiveHundred']
+					adiPathFilter: [ '/echo', '/hundred', '/twoHundred', '/threeHundred', '/fourHundred', '/fiveHundred' ]
 				};
-				var logger = index.createExpressLogger(app, loggerConfig);
+				index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
 					resp.set('request-id', req.requestId);
 					next();
@@ -541,50 +542,50 @@ describe('ADI logging', function () {
 			});
 			async.series([
 				function (cb) {
-					request.get('http://127.0.0.1:' + port + '/hundred', function (err, res, body) {
+					request.get('http://127.0.0.1:' + port + '/hundred', function (err) {
 						should(err).not.be.ok;
 						should(fs.existsSync(logPath)).be.true;
 						cb();
 					});
 				},
 				function (cb) {
-					request.get('http://127.0.0.1:' + port + '/twoHundred', function (err, res, body) {
+					request.get('http://127.0.0.1:' + port + '/twoHundred', function (err) {
 						should(err).not.be.ok;
 						should(fs.existsSync(logPath)).be.true;
 						cb();
 					});
 				},
 				function (cb) {
-					request.get('http://127.0.0.1:' + port + '/threeHundred', function (err, res, body) {
+					request.get('http://127.0.0.1:' + port + '/threeHundred', function (err) {
 						should(err).not.be.ok;
 						should(fs.existsSync(logPath)).be.true;
 						cb();
 					});
 				},
 				function (cb) {
-					request.get('http://127.0.0.1:' + port + '/fourHundred', function (err, res, body) {
+					request.get('http://127.0.0.1:' + port + '/fourHundred', function (err) {
 						should(err).not.be.ok;
 						should(fs.existsSync(logPath)).be.true;
 						cb();
 					});
 				},
 				function (cb) {
-					request.get('http://127.0.0.1:' + port + '/fiveHundred', function (err, res, body) {
+					request.get('http://127.0.0.1:' + port + '/fiveHundred', function (err) {
 						should(err).not.be.ok;
 						should(fs.existsSync(logPath)).be.true;
 						cb();
 					});
 				}
 			],
-			function (err, results) {
+			function () {
 				readFile(logPath, function (err, data) {
 					should(err).equal(null);
-					var logEntries = data.split('\n');
-					var hundred = JSON.parse(logEntries[0]);
-					var twoHundred = JSON.parse(logEntries[1]);
-					var threeHundred = JSON.parse(logEntries[2]);
-					var fourHundred = JSON.parse(logEntries[3]);
-					var fiveHundred = JSON.parse(logEntries[4]);
+					const logEntries = data.split('\n');
+					const hundred = JSON.parse(logEntries[0]);
+					const twoHundred = JSON.parse(logEntries[1]);
+					const threeHundred = JSON.parse(logEntries[2]);
+					const fourHundred = JSON.parse(logEntries[3]);
+					const fiveHundred = JSON.parse(logEntries[4]);
 					should(hundred.status).equal('success');
 					should(twoHundred.status).equal('success');
 					should(threeHundred.status).equal('success');
@@ -601,32 +602,32 @@ describe('ADI logging', function () {
 		_util.findRandomPort(function (err, port) {
 			should(err).be.not.ok;
 			should(port).be.a.number;
-			var server = app.listen(port, function (err) {
+			app.listen(port, function (err) {
 				should(err).be.not.ok;
-				var loggerConfig = {
+				const loggerConfig = {
 					logs: tmpdir,
 					logSingleRequest: true,
 					adiLogging: true,
 					name: 'arrowTest',
-					adiPathFilter: ['/echo']
+					adiPathFilter: [ '/echo' ]
 				};
-				var logger = index.createExpressLogger(app, loggerConfig);
+				index.createExpressLogger(app, loggerConfig);
 				app.use(function (req, resp, next) {
 					req.requestId = '';
 					next();
 				});
 				app.get('/echo', function (req, resp, next) {
-					resp.send({hello:'world'});
+					resp.send({ hello:'world' });
 					next();
 				});
 				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
 					should(err).not.be.ok;
-					var logPath = path.join(tmpdir, 'adi-analytics.log');
+					const logPath = path.join(tmpdir, 'adi-analytics.log');
 					should(fs.existsSync(logPath)).be.true;
-					var obj = body && JSON.parse(body);
+					body && JSON.parse(body);
 					readFile(logPath, function (err, data) {
 						should(err).equal(null);
-						var logContent = JSON.parse(data);
+						const logContent = JSON.parse(data);
 						should(logContent.length).not.equal(0);
 						should(logContent.correlationId).equal(null);
 						callback();

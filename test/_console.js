@@ -1,5 +1,6 @@
 // jscs:disable jsDoc
-var events = require('events'),
+'use strict';
+const events = require('events'),
 	util = require('util'),
 	Logger = require('../lib/logger'),
 	oldConsole = console.log;
@@ -10,6 +11,7 @@ util.inherits(MockConsole, events.EventEmitter);
  * this class is a utility for overriding the console.log
  * function and capturing all the calls to it (which are fired
  * via an emit event named 'data' with the log line as event parameter).
+ * @param {Boolean} [stripColors] Whether or not to strip colors
  */
 function MockConsole(stripColors) {
 	this.started = false;
@@ -18,6 +20,7 @@ function MockConsole(stripColors) {
 
 /**
  * log to the original underlying logger
+ * @returns {MockConsole}
  */
 MockConsole.prototype.log = function () {
 	oldConsole.apply(oldConsole, arguments);
@@ -37,8 +40,8 @@ MockConsole.prototype.start = function (timeout) {
 		}.bind(this), timeout);
 		console.log = function () {
 			if (this.started) {
-				var args = Array.prototype.slice.call(arguments),
-					buf = util.format.apply(util.format, args);
+				const args = Array.prototype.slice.call(arguments);
+				let buf = util.format.apply(util.format, args);
 				if (this.stripColors) {
 					buf = Logger.stripColors(buf);
 				}

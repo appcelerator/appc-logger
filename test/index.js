@@ -1,6 +1,8 @@
 // jscs:disable jsDoc
 // jshint -W079
-var bunyan = require('bunyan'),
+/* eslint no-unused-expressions: "off" */
+'use strict';
+const bunyan = require('bunyan'),
 	should = require('should'),
 	index = require('../');
 
@@ -23,12 +25,12 @@ describe('index', function () {
 			callback();
 			return true;
 		};
-		logger.info({password:'1234'}, 'hello');
+		logger.info({ password:'1234' }, 'hello');
 	});
 
 	it('should mask password in record (nested)', function (callback) {
 		var logger = index.createDefaultLogger(),
-		consoleLogger = logger.streams[0].stream;
+			consoleLogger = logger.streams[0].stream;
 
 		consoleLogger.write = function (record) {
 			should(record.obj).be.an.object;
@@ -36,12 +38,12 @@ describe('index', function () {
 			callback();
 			return true;
 		};
-		logger.info({obj:{password:'1234'}}, 'hello');
+		logger.info({ obj: { password: '1234' } }, 'hello');
 	});
 
 	it('should mask password in array', function (callback) {
 		var logger = index.createDefaultLogger(),
-		consoleLogger = logger.streams[0].stream;
+			consoleLogger = logger.streams[0].stream;
 
 		consoleLogger.write = function (record) {
 			should(record.obj).be.an.object;
@@ -50,12 +52,12 @@ describe('index', function () {
 			callback();
 			return true;
 		};
-		logger.info(['foo', 'bar', '--password', 'baz'], 'hello');
+		logger.info([ 'foo', 'bar', '--password', 'baz' ], 'hello');
 	});
 
 	it('should mask password in shorter array', function (callback) {
 		var logger = index.createDefaultLogger(),
-		consoleLogger = logger.streams[0].stream;
+			consoleLogger = logger.streams[0].stream;
 
 		consoleLogger.write = function (record) {
 			should(record.obj).be.an.object;
@@ -64,7 +66,7 @@ describe('index', function () {
 			callback();
 			return true;
 		};
-		logger.info(['--password'], 'hello');
+		logger.info([ '--password' ], 'hello');
 	});
 
 	it('should expose bunyan constants', function () {

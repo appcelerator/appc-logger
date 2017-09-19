@@ -1,6 +1,8 @@
 // jscs:disable jsDoc
 // jshint -W079
-var should = require('should'),
+/* eslint no-unused-expressions: "off" */
+'use strict';
+const should = require('should'),
 	fs = require('fs'),
 	path = require('path'),
 	tmpdir = require('os').tmpdir(),
@@ -12,16 +14,16 @@ describe('console', function () {
 	it('should be able to stream JSON logs', function (callback) {
 		should(JSONStreamer).be.an.object;
 
-		var fn = path.join(tmpdir, 'json.log');
-		var outfn = path.join(tmpdir, 'json_result.log');
+		const fn = path.join(tmpdir, 'json.log');
+		const outfn = path.join(tmpdir, 'json_result.log');
 		console.log(tmpdir);
 
-		var buf = [];
-		for (var c = 0; c < 10; c++) {
-			buf[c] = JSON.stringify({c: c});
+		const buf = [];
+		for (let c = 0; c < 10; c++) {
+			buf[c] = JSON.stringify({ c: c });
 		}
 
-		var stream = new JSONStreamer(),
+		const stream = new JSONStreamer(),
 			outstream = fs.createWriteStream(outfn);
 
 		outstream.on('finish', function () {
@@ -30,7 +32,7 @@ describe('console', function () {
 			should(result).be.ok;
 			should(result).be.an.array;
 			should(result).have.length(buf.length);
-			for (var c = 0; c < buf.length; c++) {
+			for (let c = 0; c < buf.length; c++) {
 				should(JSON.stringify(result[c])).eql(buf[c]);
 			}
 			callback();
