@@ -1,6 +1,7 @@
 // jscs:disable jsDoc
 // jshint -W079
 /* eslint no-unused-expressions: "off" */
+/* eslint quote-props: "off" */
 'use strict';
 const should = require('should'),
 	util = require('util'),
