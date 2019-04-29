@@ -41,10 +41,10 @@ describe('logger', function () {
 		});
 	});
 
-	after(function (done) {
+	after(function () {
 		this.timeout(10000);
 		_console.stop();
-		_util.cleanupTempDirs(done);
+		_util.cleanupTempDirs();
 	});
 
 	it('should be able to load', function () {
@@ -243,11 +243,10 @@ describe('ADI logging', function () {
 		});
 	});
 
-	after(function (done) {
-
+	after(function () {
 		this.timeout(10000);
 		_console.stop();
-		_util.cleanupTempDirs(done);
+		_util.cleanupTempDirs();
 	});
 
 	it('RDPP-910: Should log adi logs if singleRequest(transactionLogEnabled) is false', function (callback) {
