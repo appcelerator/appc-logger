@@ -6,7 +6,7 @@ const async = require('async'),
 	should = require('should'),
 	index = require('../'),
 	_util = require('./_util'),
-	_console = new (require('./_console'))(),
+	_console = new(require('./_console'))(),
 	path = require('path'),
 	fs = require('fs-extra'),
 	express = require('express'),
@@ -92,7 +92,7 @@ describe('logger', function () {
 			app.listen(port, function (err) {
 				should(err).be.not.ok;
 
-				const logger = index.createExpressLogger(app, { logs:tmpdir, logSingleRequest:true });
+				const logger = index.createExpressLogger(app, { logs: tmpdir, logSingleRequest: true });
 				should(logger).be.an.object;
 				should(logger.info).be.a.function;
 
@@ -113,7 +113,7 @@ describe('logger', function () {
 				});
 
 				app.get('/echo', function (req, resp, next) {
-					resp.send({ hello:'world' });
+					resp.send({ hello: 'world' });
 					next();
 				});
 
@@ -123,7 +123,7 @@ describe('logger', function () {
 						should(err).not.be.ok;
 						const obj = body && JSON.parse(body);
 						should(obj).be.an.object;
-						should(obj).eql({ hello:'world' });
+						should(obj).eql({ hello: 'world' });
 						should(res.headers).be.an.object;
 						should(res.headers['request-id']).be.a.string;
 						const reqid = res.headers['request-id'];
@@ -196,7 +196,7 @@ describe('logger', function () {
 					next();
 				});
 				app.get('/arrowPing.json', function (req, resp, next) {
-					resp.send({ hello:'world' });
+					resp.send({ hello: 'world' });
 					next();
 				});
 				request.get('http://127.0.0.1:' + port + '/arrowPing.json', function () {
@@ -222,7 +222,7 @@ describe('logger', function () {
 					next();
 				});
 				app.get('/echo', function (req, resp, next) {
-					resp.send({ hello:'world' });
+					resp.send({ hello: 'world' });
 					next();
 				});
 				request.get('http://127.0.0.1:' + port + '/echo', function (err) {
@@ -270,7 +270,7 @@ describe('ADI logging', function () {
 					next();
 				});
 				app.get('/echo', function (req, resp, next) {
-					resp.send({ hello:'world' });
+					resp.send({ hello: 'world' });
 					next();
 				});
 				request.get('http://127.0.0.1:' + port + '/echo', function (err) {
@@ -347,7 +347,7 @@ describe('ADI logging', function () {
 					next();
 				});
 				app.get('/echo', function (req, resp, next) {
-					resp.send({ hello:'world' });
+					resp.send({ hello: 'world' });
 					next();
 				});
 				app.get('/api/foo', function (req, resp, next) {
@@ -400,7 +400,7 @@ describe('ADI logging', function () {
 					next();
 				});
 				app.get('/echo', function (req, resp, next) {
-					resp.send({ hello:'world' });
+					resp.send({ hello: 'world' });
 					next();
 				});
 				request.get('http://127.0.0.1:' + port + '/echo', function (err) {
@@ -438,7 +438,7 @@ describe('ADI logging', function () {
 					next();
 				});
 				app.get('/echo', function (req, resp, next) {
-					resp.send({ hello:'world' });
+					resp.send({ hello: 'world' });
 					next();
 				});
 				request.get('http://127.0.0.1:' + port + '/echo', function (err) {
@@ -478,7 +478,7 @@ describe('ADI logging', function () {
 					next();
 				});
 				app.get('/echo', function (req, resp, next) {
-					resp.send({ hello:'world' });
+					resp.send({ hello: 'world' });
 					next();
 				});
 				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {
@@ -617,7 +617,7 @@ describe('ADI logging', function () {
 					next();
 				});
 				app.get('/echo', function (req, resp, next) {
-					resp.send({ hello:'world' });
+					resp.send({ hello: 'world' });
 					next();
 				});
 				request.get('http://127.0.0.1:' + port + '/echo', function (err, res, body) {

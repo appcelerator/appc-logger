@@ -25,7 +25,7 @@ describe('index', function () {
 			callback();
 			return true;
 		};
-		logger.info({ password:'1234' }, 'hello');
+		logger.info({ password: '1234' }, 'hello');
 	});
 
 	it('should mask password in record (nested)', function (callback) {

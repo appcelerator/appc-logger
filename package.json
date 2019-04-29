@@ -11,7 +11,7 @@
     "fs-extra": "^2.0.0",
     "iconv-lite": "^0.4.19",
     "js-yaml": "^3.10.0",
-    "lodash": "^3.10.1",
+    "lodash": "^4.17.11",
     "mime-types": "^2.1.17",
     "minimist": "0.0.10",
     "readable-stream": "^2.0.3",
@@ -26,13 +26,13 @@
     "grunt-contrib-clean": "^1.0.0",
     "grunt-mocha-istanbul": "^5.0.2",
     "istanbul": "^0.4.1",
-    "mocha": "^3.5.3",
-    "mocha-jenkins-reporter": "^0.3.9",
+    "mocha": "^6.1.4",
+    "mocha-jenkins-reporter": "^0.4.1",
     "request": "^2.81.0",
     "should": "^11.2.0"
   },
   "scripts": {
-    "test": "JUNIT_REPORT_PATH=junit_report.xml grunt"
+    "test": "env JUNIT_REPORT_PATH=junit_report.xml grunt"
   },
   "bugs": {
     "url": "https://jira.appcelerator.org/browse/API"
