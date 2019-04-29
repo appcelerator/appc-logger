@@ -26,7 +26,7 @@
     "grunt-contrib-clean": "^1.0.0",
     "grunt-mocha-istanbul": "^5.0.2",
     "istanbul": "^0.4.1",
-    "mocha": "^3.1.4",
+    "mocha": "^3.5.3",
     "mocha-jenkins-reporter": "^0.4.1",
     "request": "^2.81.0",
     "should": "^11.2.0"
